@@ -54,9 +54,11 @@ GeomCat <- ggproto(
   "GeomCat",
   Geom,
   required_aes = c("x", "y"),
-  non_missing_aes = c("size", "coat"),
+  non_missing_aes = c("size", "coat", "pose", "tail"),
   default_aes = aes(
     coat = "black",
+    pose = "sitting",
+    tail = "up",
     size = 8,
     colour = NA,
     fill = NA,
@@ -67,7 +69,9 @@ GeomCat <- ggproto(
   extra_params = "na.rm",
   draw_key = draw_key_cat,
   draw_panel = function(self, data, panel_params, coord,
-                        eyes = "open", whiskers = TRUE, seed = 1) {
+                        eyes = "open", whiskers = TRUE, seed = 1,
+                        accessory = "none", mood = "none",
+                        silhouette = FALSE) {
     # ...
   }
 )
@@ -76,16 +80,23 @@ GeomCat <- ggproto(
 - `required_aes` are checked before drawing and produce the familiar
   "requires the following missing aesthetics" error.
 - `default_aes` are filled in for aesthetics the user did not supply.
-  Anything listed here is also an aesthetic, so `coat`, `size` and
-  `angle` can be mapped in `aes()` or fixed in the `geom_cat()` call.
-- `non_missing_aes` are removed when missing, like `size` here.
+  Anything listed here is also an aesthetic, so `coat`, `pose`, `tail`,
+  `size` and `angle` can be mapped in `aes()` or fixed in the
+  `geom_cat()` call.
+- `non_missing_aes` are removed when missing, like `size`, `coat`, `pose`
+  and `tail` here.
 - `extra_params` lists parameters that are not aesthetics but are accepted
   by the layer, such as `na.rm`.
 - `draw_key` draws the legend key.
 
-Notice that `eyes`, `whiskers` and `seed` are formal arguments of
-`draw_panel()`.  That is what makes them valid layer parameters: ggplot2
-collects a geom's parameters from the arguments of `draw_panel()`.
+`pose` and `tail` are aesthetics because they change the shape of the cat
+and can vary by row.  `accessory`, `mood` and `silhouette` are parameters
+because they decorate or simplify the whole layer.
+
+Notice that `eyes`, `whiskers`, `seed`, `accessory`, `mood` and
+`silhouette` are formal arguments of `draw_panel()`.  That is what makes
+them valid layer parameters: ggplot2 collects a geom's parameters from the
+arguments of `draw_panel()`.
 
 ## Step 2: turn data into grobs
 
@@ -131,6 +142,26 @@ Two grid details are worth remembering:
   ...) so tests can find them; the sticker border copies get a `.halo`
   suffix so they do not collide with the coloured part.
 
+## The drawing code is modular
+
+One cat is a composition, not a single drawing function.  The code is
+split by body part:
+
+| File | Responsibility |
+|:--|:--|
+| `R/cat-parts.R` | colour and geometry helpers, the drawing context, the sticker halo |
+| `R/cat-poses.R` | pose anchors, body, ears and coat patches |
+| `R/cat-tails.R` | tail paths and rings |
+| `R/cat-face.R` | eyes, muzzle, mouth and whiskers |
+| `R/cat-accessories.R` | hats, collars, glasses and friends |
+| `R/cat-moods.R` | the extras that float around the cat |
+| `R/cat-coats.R` | coat palettes and deterministic markings |
+
+`cat_grob()` asks `pose_anchors()` where the head, body, neck and tail
+root sit, then draws each part relative to those anchors.  That is why a
+new pose only needs a new entry in `pose_anchors()` and a body outline, and
+a new tail only needs a path in `tail_path()`.
+
 ## Step 3: draw the legend key
 
 A legend key is just a small grob.  `draw_key` receives the key's data, the
@@ -138,15 +169,23 @@ layer parameters and the key size, and draws in a 0 to 1 viewport:
 
 ```{r eval = FALSE}
 draw_key_cat <- function(data, params, size) {
-  cat_grob(
+  grob <- cat_grob(
     x = grid::unit(0.5, "npc"),
     y = grid::unit(0.5, "npc"),
     width = grid::unit(0.9, "snpc"),
     height = grid::unit(0.9, "snpc"),
     coat = data$coat %||% "black",
+    pose = data$pose %||% "sitting",
+    tail = data$tail %||% "up",
+    accessory = params$accessory %||% "none",
+    silhouette = params$silhouette %||% FALSE,
     # ...
     stroke = 0.9 * (data$linewidth %||% 1)
   )
+  key_size <- size[[1]] / 10
+  attr(grob, "width") <- key_size
+  attr(grob, "height") <- key_size
+  grob
 }
 ```
 
@@ -169,10 +208,15 @@ geom_cat <- function(mapping = NULL,
                      eyes = c("open", "closed"),
                      whiskers = TRUE,
                      seed = 1,
+                     accessory = "none",
+                     mood = "none",
+                     silhouette = FALSE,
                      na.rm = FALSE,
                      show.legend = NA,
                      inherit.aes = TRUE) {
   eyes <- match.arg(eyes)
+  accessory <- match_accessory(accessory)
+  mood <- match_mood(mood)
   layer(
     geom = GeomCat,
     stat = stat,
@@ -186,6 +230,9 @@ geom_cat <- function(mapping = NULL,
       eyes = eyes,
       whiskers = whiskers,
       seed = seed,
+      accessory = accessory,
+      mood = mood,
+      silhouette = silhouette,
       ...
     )
   )
@@ -198,20 +245,29 @@ the layer data and recycles them to the number of rows.
 
 ## Step 5: custom aesthetics and their default scale
 
-`coat` is not an aesthetic ggplot2 knows about.  That is fine: any name in
-`default_aes` becomes an aesthetic.  When the user maps it, ggplot2 looks
-for a default scale by name.  For a discrete aesthetic called `coat`, it
-looks for `scale_coat_discrete()` in the environment of the `ggplot()`
-call.  That is why the package provides one:
+`coat`, `pose` and `tail` are not aesthetics ggplot2 knows about.  That is
+fine: any name in `default_aes` becomes an aesthetic.  When the user maps
+one, ggplot2 looks for a default scale by name.  For a discrete aesthetic
+called `coat`, it looks for `scale_coat_discrete()` in the environment of
+the `ggplot()` call.  The package provides one for each:
 
 ```{r eval = FALSE}
 scale_coat_discrete <- function(..., guide = "legend") {
   scale_discrete_identity(aesthetics = "coat", ..., guide = guide)
 }
+
+scale_pose_discrete <- function(..., guide = "legend") {
+  scale_discrete_identity(aesthetics = "pose", ..., guide = guide)
+}
+
+scale_tail_discrete <- function(..., guide = "legend") {
+  scale_discrete_identity(aesthetics = "tail", ..., guide = guide)
+}
 ```
 
 An identity scale is the right choice here because the values *are* the
-coats: `"tuxedo"` is a recipe for drawing a tuxedo cat, not a colour.
+coats, poses and tails: `"tuxedo"` is a recipe for drawing a tuxedo cat,
+not a colour.
 If you invent an aesthetic whose values need translating, return a palette
 from a `discrete_scale()` instead.
 
