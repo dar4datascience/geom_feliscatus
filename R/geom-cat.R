@@ -141,9 +141,11 @@ GeomCat <- ggproto(
       )
     })
 
+    # Leave the gTree unnamed: grid only draws the first of several siblings
+    # that share a name, so two geom_cat() layers would otherwise collapse
+    # into one.
     grid::gTree(
-      children = do.call(grid::gList, grobs),
-      name = "geom_cat"
+      children = do.call(grid::gList, grobs)
     )
   }
 )

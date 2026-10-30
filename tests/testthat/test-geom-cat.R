@@ -79,3 +79,17 @@ test_that("the legend key draws a cat", {
   expect_equal(attr(key, "width"), 0.5)
   expect_equal(attr(key, "height"), 0.5)
 })
+
+test_that("layers get distinct grob names", {
+  data <- data.frame(x = 1:2, y = 1)
+  plot <- ggplot(data, aes(x, y)) +
+    geom_cat(data = data[1, , drop = FALSE]) +
+    geom_cat(data = data[2, , drop = FALSE])
+
+  grob <- ggplotGrob(plot)
+  panel <- grob$grobs[[which(grob$layout$name == "panel")]]
+  names <- vapply(panel$children, function(x) x$name, character(1))
+  names <- names[names != "NULL"]
+
+  expect_equal(anyDuplicated(names), 0L)
+})
