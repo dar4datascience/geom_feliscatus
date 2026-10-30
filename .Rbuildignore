@@ -5,3 +5,5 @@
 ^README\.Rmd$
 ^website$
 ^\.playwright-mcp$
+^Rplots\.pdf$
+^LICENSE\.md$

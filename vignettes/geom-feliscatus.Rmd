@@ -35,11 +35,11 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
   theme_void()
 ```
 
-## The five coats
+## The seven coats
 
 `cat_coats()` lists the coats the geom knows how to draw.
 
-```{r coats, fig.alt = "Five cats in a row, one in each coat: black, white, tuxedo, calico and tortoise."}
+```{r coats, fig.alt = "Seven cats in a row, one in each coat: black, white, tuxedo, calico, tortoise, tabby and siamese."}
 cats <- data.frame(
   x = seq_along(cat_coats()),
   y = 1,
@@ -57,7 +57,7 @@ The values are used as-is: `"calico"` means a calico cat, not a colour
 from a palette. `scale_coat_discrete()` is the identity scale behind that
 behaviour, and it is also where you set a title or prettier labels.
 
-```{r coat-scale, fig.alt = "The same five cats with uppercase coat labels in the legend, titled 'Coat'."}
+```{r coat-scale, fig.alt = "The same seven cats with uppercase coat labels in the legend, titled 'Coat'."}
 ggplot(cats, aes(x, y, coat = coat)) +
   geom_cat(size = 22) +
   scale_coat_discrete(name = "Coat", labels = toupper) +
@@ -72,13 +72,93 @@ counter-clockwise, and `eyes` and `whiskers` are layer parameters rather
 than aesthetics.
 
 ```{r variants, fig.alt = "Five cats at different sizes and angles, all with closed eyes and no whiskers."}
-ggplot(cats, aes(x, y, coat = coat)) +
+ggplot(cats[1:5, ], aes(x, y, coat = coat)) +
   geom_cat(
     size = c(14, 18, 22, 26, 30),
     angle = c(0, 15, -20, 30, 0),
     eyes = "closed",
     whiskers = FALSE
   ) +
+  coord_equal() +
+  theme_void()
+```
+
+## Poses and tails
+
+`pose` and `tail` are aesthetics too, so a single layer can mix them.
+`cat_poses()` lists the bodies and `cat_tails()` the tails.
+
+```{r poses, fig.alt = "Four cats, one sitting, one in a loaf, one curled up and one standing."}
+poses <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 26, tail = "curl") +
+  scale_pose_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+```{r tails, fig.alt = "Six tabby cats showing an upright tail, a curled tail, a plume, a kink, a bobtail and no tail."}
+tails <- data.frame(x = seq_along(cat_tails()), y = 1, tail = cat_tails())
+
+ggplot(tails, aes(x, y, tail = tail)) +
+  geom_cat(size = 26, coat = "tabby") +
+  scale_tail_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+## Accessories and moods
+
+`accessory` and `mood` are layer parameters: one value for the whole
+layer. They are decoration rather than shape, so they do not need a scale.
+
+```{r accessories, fig.alt = "Ten cats wearing a collar, bow tie, party hat, wizard hat, scarf, glasses, headphones, crown and Santa hat."}
+hats <- data.frame(
+  x = seq_along(cat_accessories())[-1],
+  y = 1,
+  accessory = cat_accessories()[-1]
+)
+
+p <- ggplot(hats, aes(x, y)) + coord_equal() + theme_void()
+for (i in seq_len(nrow(hats))) {
+  p <- p + geom_cat(
+    data = hats[i, , drop = FALSE],
+    size = 24,
+    coat = "tabby",
+    accessory = hats$accessory[i]
+  )
+}
+p
+```
+
+```{r moods, fig.alt = "Cats with sleeping z's, a heart, sparkles, an anger mark, a sweat drop, music notes, a fish, a ball of yarn, paw prints, a shadow and a cardboard box."}
+moods <- data.frame(x = seq_along(cat_moods())[-1], y = 1)
+
+p <- ggplot(moods, aes(x, y)) + coord_equal() + theme_void()
+for (i in seq_along(cat_moods()[-1])) {
+  p <- p + geom_cat(
+    data = moods[i, , drop = FALSE],
+    size = 22,
+    coat = "tuxedo",
+    mood = cat_moods()[-1][i]
+  )
+}
+p
+```
+
+## Silhouettes
+
+`silhouette = TRUE` draws the same cat as one solid shape, with no face,
+markings, whiskers or accessory. Pale coats fall back to ink so they stay
+visible on a white page; `fill` or `colour` overrides that.
+
+```{r silhouettes, fig.alt = "A calico cat beside the same cat drawn as a solid black silhouette."}
+silhouette <- data.frame(x = 1:2, y = 1)
+
+ggplot(silhouette, aes(x, y)) +
+  geom_cat(data = silhouette[1, ], size = 30, coat = "calico") +
+  geom_cat(data = silhouette[2, ], size = 30, coat = "calico", silhouette = TRUE) +
   coord_equal() +
   theme_void()
 ```
@@ -124,4 +204,5 @@ ggplot(cars, aes(wt, mpg, coat = coat, size = hp)) +
 - Read `vignette("extending-ggplot2", package = "geomfeliscatus")` for a
   guided tour of the code behind the geom.
 - `?geom_cat` documents every aesthetic and parameter.
-- `?cat_coats` lists the coats.
+- `?cat_coats`, `?cat_poses`, `?cat_tails`, `?cat_accessories` and
+  `?cat_moods` list the supported values.

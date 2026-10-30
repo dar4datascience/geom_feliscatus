@@ -6,7 +6,7 @@
 \alias{geomfeliscatus-package}
 \title{geomfeliscatus: Cat-Themed Geoms for 'ggplot2'}
 \description{
-A cat-themed geom for 'ggplot2'. 'geom_cat()' draws cats at x/y positions in five coats (black, white, tuxedo, calico and tortoise), supports a custom 'coat' aesthetic with an identity scale, and doubles as a worked example of extending 'ggplot2' with a new 'Geom', 'draw_key' method and scale.
+A cat-themed geom for 'ggplot2'. 'geom_cat()' draws cats at x/y positions in seven coats (black, white, tuxedo, calico, tortoise, tabby and siamese), four poses, six tail shapes, nine accessories and a set of mood extras. It supports custom 'coat', 'pose' and 'tail' aesthetics with identity scales, and doubles as a worked example of extending 'ggplot2' with a new 'Geom', 'draw_key' method and scale.
 }
 \seealso{
 Useful links:

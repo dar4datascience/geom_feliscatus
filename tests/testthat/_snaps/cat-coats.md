@@ -5,5 +5,5 @@
     Condition
       Error:
       ! Unknown cat coat: "dalmatian".
-      i Supported coats are "black", "white", "tuxedo", "calico", and "tortoise".
+      i Supported coats are "black", "white", "tuxedo", "calico", "tortoise", "tabby", and "siamese".
 

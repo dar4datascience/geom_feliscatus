@@ -3,12 +3,14 @@ test_that("defaults are applied", {
   data <- ggplot_build(plot)$data[[1]]
 
   expect_equal(data$coat, "black")
+  expect_equal(data$pose, "sitting")
+  expect_equal(data$tail, "up")
   expect_equal(data$size, 8)
   expect_equal(data$angle, 0)
 })
 
 test_that("the coat can be mapped from data", {
-  data <- data.frame(x = 1:5, y = 1, coat = cat_coats())
+  data <- data.frame(x = seq_along(cat_coats()), y = 1, coat = cat_coats())
   plot <- ggplot(data, aes(x, y, coat = coat)) + geom_cat()
   built <- ggplot_build(plot)$data[[1]]
 
@@ -47,8 +49,12 @@ test_that("fill overrides the base fur colour", {
     fill = "pink"
   )
 
-  # Draw order: tail rim, tail, two ears, two inner ears, body.
-  body <- grob$children[[7]]
+  # Parts are named so that adding a part does not break this test.
+  body <- grob$children[[which(vapply(
+    grob$children,
+    function(g) identical(g$name, "cat_body"),
+    logical(1)
+  ))]]
   expect_s3_class(body, "polygon")
   expect_equal(body$gp$fill, alpha("pink", 1))
 })
@@ -92,4 +98,113 @@ test_that("layers get distinct grob names", {
   names <- names[names != "NULL"]
 
   expect_equal(anyDuplicated(names), 0L)
+})
+
+test_that("pose and tail can be mapped from data", {
+  data <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+  built <- ggplot_build(
+    ggplot(data, aes(x, y, pose = pose)) + geom_cat()
+  )$data[[1]]
+
+  expect_equal(built$pose, cat_poses())
+})
+
+test_that("unknown poses and tails fail with a helpful error", {
+  expect_error(match_pose("floating"), "Unknown cat pose")
+  expect_error(match_tail("propeller"), "Unknown cat tail")
+})
+
+test_that("every pose and tail combination draws", {
+  for (pose in cat_poses()) {
+    for (tail in cat_tails()) {
+      expect_no_error(cat_grob(
+        x = unit(0.5, "npc"),
+        y = unit(0.5, "npc"),
+        width = unit(12, "mm"),
+        height = unit(12, "mm"),
+        pose = pose,
+        tail = tail
+      ))
+    }
+  }
+})
+
+test_that("silhouettes have no face, markings or tail rings", {
+  grob <- cat_grob(
+    x = unit(0.5, "npc"),
+    y = unit(0.5, "npc"),
+    width = unit(12, "mm"),
+    height = unit(12, "mm"),
+    coat = "calico",
+    silhouette = TRUE
+  )
+  names <- vapply(grob$children, function(g) g$name, character(1))
+
+  expect_false(any(grepl("eye|muzzle|whisker|ring", names)))
+  expect_true(any(names == "cat_body"))
+})
+
+test_that("silhouettes fall back to ink so pale coats stay visible", {
+  grob <- cat_grob(
+    x = unit(0.5, "npc"),
+    y = unit(0.5, "npc"),
+    width = unit(12, "mm"),
+    height = unit(12, "mm"),
+    coat = "white",
+    silhouette = TRUE
+  )
+  body <- grob$children[[which(vapply(
+    grob$children,
+    function(g) identical(g$name, "cat_body"),
+    logical(1)
+  ))]]
+
+  expect_equal(body$gp$fill, "#1F1B18FF")
+})
+
+test_that("every accessory and mood draws", {
+  for (accessory in cat_accessories()) {
+    expect_no_error(cat_grob(
+      x = unit(0.5, "npc"),
+      y = unit(0.5, "npc"),
+      width = unit(12, "mm"),
+      height = unit(12, "mm"),
+      accessory = accessory
+    ))
+  }
+  for (mood in cat_moods()) {
+    expect_no_error(cat_grob(
+      x = unit(0.5, "npc"),
+      y = unit(0.5, "npc"),
+      width = unit(12, "mm"),
+      height = unit(12, "mm"),
+      mood = mood
+    ))
+  }
+})
+
+test_that("accessories and moods are validated", {
+  expect_error(geom_cat(accessory = "top hat"), "Unknown cat accessor")
+  expect_error(geom_cat(mood = "smug"), "Unknown cat mood")
+})
+
+test_that("legend keys draw for every pose and tail", {
+  for (pose in cat_poses()) {
+    for (tail in cat_tails()) {
+      key <- draw_key_cat(
+        list(
+          coat = "tuxedo",
+          pose = pose,
+          tail = tail,
+          colour = NA,
+          fill = NA,
+          alpha = NA,
+          linewidth = 1
+        ),
+        list(eyes = "open", whiskers = TRUE, seed = 1),
+        size = 5
+      )
+      expect_s3_class(key, "gTree")
+    }
+  }
 })

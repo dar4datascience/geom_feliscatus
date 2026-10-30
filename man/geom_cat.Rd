@@ -14,6 +14,9 @@ geom_cat(
   eyes = c("open", "closed"),
   whiskers = TRUE,
   seed = 1,
+  accessory = "none",
+  mood = "none",
+  silhouette = FALSE,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -37,7 +40,15 @@ aesthetics, used to set an aesthetic to a fixed value, like
 
 \item{whiskers}{Should the cat have whiskers?  Defaults to \code{TRUE}.}
 
-\item{seed}{Integer used to vary the markings of calico and tortoise cats.}
+\item{seed}{Integer used to vary the markings of calico, tortoise and tabby
+cats.}
+
+\item{accessory}{One of \code{\link[=cat_accessories]{cat_accessories()}}.  Defaults to \code{"none"}.}
+
+\item{mood}{One of \code{\link[=cat_moods]{cat_moods()}}.  Defaults to \code{"none"}.}
+
+\item{silhouette}{If \code{TRUE}, draw the cat as a single solid shape with no
+face, markings, whiskers or accessory.  Defaults to \code{FALSE}.}
 
 \item{na.rm}{If \code{FALSE} (the default), missing values are removed with a
 warning.  If \code{TRUE}, they are silently removed.}
@@ -51,9 +62,10 @@ combining with them.}
 A \code{ggplot2} layer that draws cats.
 }
 \description{
-\code{geom_cat()} draws a cat at each observation.  Cats come in five coats:
-\code{"black"}, \code{"white"}, \code{"tuxedo"}, \code{"calico"} and \code{"tortoise"} (see
-\code{\link[=cat_coats]{cat_coats()}}).
+\code{geom_cat()} draws a cat at each observation.  Cats come in seven coats:
+\code{"black"}, \code{"white"}, \code{"tuxedo"}, \code{"calico"}, \code{"tortoise"}, \code{"tabby"} and
+\code{"siamese"} (see \code{\link[=cat_coats]{cat_coats()}}), four poses (see \code{\link[=cat_poses]{cat_poses()}}) and six
+tails (see \code{\link[=cat_tails]{cat_tails()}}).
 }
 \section{Aesthetics}{
 
@@ -64,6 +76,8 @@ in bold):
 \item \strong{\code{y}}
 \item \code{coat}: one of \code{\link[=cat_coats]{cat_coats()}}.  Mapped values are used as-is, so
 \code{aes(coat = coat_name)} needs no manual scale.  Defaults to \code{"black"}.
+\item \code{pose}: one of \code{\link[=cat_poses]{cat_poses()}}.  Defaults to \code{"sitting"}.
+\item \code{tail}: one of \code{\link[=cat_tails]{cat_tails()}}.  Defaults to \code{"up"}.
 \item \code{size}: the height of the cat in mm.  Defaults to \code{8}.
 \item \code{colour}: outline colour.  \code{NA} (the default) picks a rim that contrasts
 with the fur.
@@ -84,10 +98,17 @@ ggplot(mtcars, aes(wt, mpg)) +
 cats <- data.frame(
   x = 1:5,
   y = 1,
-  coat = cat_coats()
+  coat = cat_coats()[1:5]
 )
 
 ggplot(cats, aes(x, y, coat = coat)) +
   geom_cat(size = 16) +
+  coord_equal()
+
+# Pose and tail are aesthetics, so they can vary by row
+poses <- data.frame(x = 1:4, y = 1, pose = cat_poses())
+
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 20, tail = "curl") +
   coord_equal()
 }

@@ -14,7 +14,7 @@
 #' @examples
 #' library(ggplot2)
 #'
-#' cats <- data.frame(x = 1:5, y = 1, coat = cat_coats())
+#' cats <- data.frame(x = seq_along(cat_coats()), y = 1, coat = cat_coats())
 #'
 #' ggplot(cats, aes(x, y, coat = coat)) +
 #'   geom_cat(size = 14) +

@@ -1,13 +1,17 @@
-test_that("cat_coats() lists the five coats", {
+test_that("cat_coats() lists the seven coats", {
   expect_equal(
     cat_coats(),
-    c("black", "white", "tuxedo", "calico", "tortoise")
+    c(
+      "black", "white", "tuxedo", "calico", "tortoise", "tabby", "siamese"
+    )
   )
 })
 
 test_that("coat aliases are normalised", {
   expect_equal(match_coat("tortoiseshell"), "tortoise")
   expect_equal(match_coat(" Tortie "), "tortoise")
+  expect_equal(match_coat("mackerel"), "tabby")
+  expect_equal(match_coat("point"), "siamese")
   expect_equal(match_coat(c("black", "white")), c("black", "white"))
 })
 
@@ -21,6 +25,8 @@ test_that("each coat has the expected number of markings", {
   expect_length(coat_spec("tuxedo")$patches, 3)
   expect_length(coat_spec("calico")$patches, 4)
   expect_length(coat_spec("tortoise")$patches, 5)
+  expect_length(coat_spec("tabby")$patches, 8)
+  expect_length(coat_spec("siamese")$patches, 1)
 })
 
 test_that("markings stay inside the body and head", {

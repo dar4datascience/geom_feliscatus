@@ -103,8 +103,7 @@ gives each cat its own viewport, sized in millimetres:
 
 ```{r eval = FALSE}
 grid::gTree(
-  children = do.call(grid::gList, grobs),
-  name = "geom_cat"
+  children = do.call(grid::gList, grobs)
 )
 ```
 
@@ -126,9 +125,11 @@ Two grid details are worth remembering:
 - `gpar(lwd = )` is measured in 1/96 inch, not millimetres.  `geom_cat()`
   converts the `size` aesthetic to a line width so that outlines scale with
   the cat.
-- `gTree()` regenerates the names of its children, so `cat_grob()` restores
-  the names afterwards.  Named children make the grob easier to inspect and
-  to test.
+- **Sibling grobs must not share a name.**  `grid` only draws the first of
+  several siblings with the same name, so the layer's gTree is left
+  unnamed.  Inside one cat the parts are named (`"cat_body"`, `"cat_head"`,
+  ...) so tests can find them; the sticker border copies get a `.halo`
+  suffix so they do not collide with the coloured part.
 
 ## Step 3: draw the legend key
 

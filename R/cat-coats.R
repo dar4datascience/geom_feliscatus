@@ -10,12 +10,15 @@
 #' @examples
 #' cat_coats()
 cat_coats <- function() {
-  c("black", "white", "tuxedo", "calico", "tortoise")
+  c("black", "white", "tuxedo", "calico", "tortoise", "tabby", "siamese")
 }
 
 coat_aliases <- c(
   tortoiseshell = "tortoise",
-  tortie = "tortoise"
+  tortie = "tortoise",
+  mackerel = "tabby",
+  point = "siamese",
+  colourpoint = "siamese"
 )
 
 # Normalise a coat name, with a helpful error for unknown coats.
@@ -169,6 +172,100 @@ coat_specs <- list(
         angle = 0.1
       )
     )
+  ),
+  tabby = list(
+    base = "#a9744f",
+    eye = "#7fae4a",
+    muzzle = "#e8d5bd",
+    ear = "#d99a8f",
+    tail = NULL,
+    paw = "#e8d5bd",
+    stripe = "#6b4529",
+    rings = TRUE,
+    patches = list(
+      list(
+        part = "body",
+        colour = "#6b4529",
+        centre = c(-0.45, 0.32),
+        radii = c(0.32, 0.025),
+        angle = 0.08,
+        wobble = 0.04
+      ),
+      list(
+        part = "body",
+        colour = "#6b4529",
+        centre = c(0.10, 0.38),
+        radii = c(0.30, 0.024),
+        angle = -0.05,
+        wobble = 0.04
+      ),
+      list(
+        part = "body",
+        colour = "#6b4529",
+        centre = c(-0.15, 0.05),
+        radii = c(0.34, 0.025),
+        angle = 0.04,
+        wobble = 0.04
+      ),
+      list(
+        part = "body",
+        colour = "#6b4529",
+        centre = c(0.35, -0.12),
+        radii = c(0.28, 0.024),
+        angle = -0.10,
+        wobble = 0.04
+      ),
+      list(
+        part = "body",
+        colour = "#6b4529",
+        centre = c(-0.30, -0.32),
+        radii = c(0.30, 0.024),
+        angle = 0.06,
+        wobble = 0.04
+      ),
+      list(
+        part = "head",
+        colour = "#6b4529",
+        centre = c(-0.30, 0.58),
+        radii = c(0.030, 0.22),
+        angle = 0.10,
+        wobble = 0.04
+      ),
+      list(
+        part = "head",
+        colour = "#6b4529",
+        centre = c(0.00, 0.64),
+        radii = c(0.030, 0.22),
+        angle = 0,
+        wobble = 0.04
+      ),
+      list(
+        part = "head",
+        colour = "#6b4529",
+        centre = c(0.30, 0.58),
+        radii = c(0.030, 0.22),
+        angle = -0.10,
+        wobble = 0.04
+      )
+    )
+  ),
+  siamese = list(
+    base = "#f2e6d0",
+    eye = "#6fa8d6",
+    muzzle = "#4a3a33",
+    ear = "#4a3a33",
+    tail = "#4a3a33",
+    paw = "#4a3a33",
+    patches = list(
+      list(
+        part = "head",
+        colour = "#4a3a33",
+        centre = c(0, 0.02),
+        radii = c(0.74, 0.56),
+        angle = 0,
+        wobble = 0.10
+      )
+    )
   )
 )
 
@@ -226,6 +323,7 @@ coat_spec <- function(coat, seed = 1) {
       centre = patch$centre + offset,
       radii = patch$radii * scale,
       angle = angle,
+      wobble = patch$wobble %||% 0.18,
       seed = seed * 31 + i
     )
     patch

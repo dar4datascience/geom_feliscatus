@@ -5,10 +5,12 @@ new geom. It draws cats.
 
 **Documentation:** <https://dar4datascience.github.io/geom_feliscatus/>
 
-Cats come in five coats: **black**, **white**, **tuxedo**, **calico** and
-**tortoise**. The `coat` aesthetic is an identity scale, so the value you
-supply is the cat you get, whether you fix it in the layer or map it from
-your data.
+Cats come in seven coats: **black**, **white**, **tuxedo**, **calico**,
+**tortoise**, **tabby** and **siamese**. They can sit, loaf, curl up or
+stand; have six tail shapes; wear nine accessories; and come with mood
+extras. The `coat`, `pose` and `tail` aesthetics are identity scales, so the
+value you supply is the cat you get, whether you fix it in the layer or map
+it from your data.
 
 ## Installation
 
@@ -29,10 +31,10 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
   theme_void()
 ```
 
-## The five coats
+## The seven coats
 
 ```r
-cats <- data.frame(x = 1:5, y = 1, coat = cat_coats())
+cats <- data.frame(x = seq_along(cat_coats()), y = 1, coat = cat_coats())
 
 ggplot(cats, aes(x, y, coat = coat)) +
   geom_cat(size = 22) +
@@ -40,7 +42,7 @@ ggplot(cats, aes(x, y, coat = coat)) +
   theme_void()
 ```
 
-![Five cats, one in each coat: black, white, tuxedo, calico and tortoise.](man/figures/README-cats.png)
+![Seven cats, one in each coat: black, white, tuxedo, calico, tortoise, tabby and siamese.](man/figures/README-cats.png)
 
 | Coat | Description |
 |:--|:--|
@@ -49,18 +51,81 @@ ggplot(cats, aes(x, y, coat = coat)) +
 | `"tuxedo"` | Black with a white bib, chin and paws. |
 | `"calico"` | White with orange and black patches. |
 | `"tortoise"` | Brown with dark and ginger mottling (also `"tortoiseshell"`). |
+| `"tabby"` | Brown with dark stripes on the body, forehead and tail. |
+| `"siamese"` | Cream with dark points on the face, ears, paws and tail. |
+
+## Poses and tails
+
+`pose` and `tail` are aesthetics, so one layer can mix them.
+
+```r
+poses <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 24, tail = "curl") +
+  scale_pose_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+Poses are `sitting`, `loaf`, `curled` and `standing`; tails are `up`,
+`curl`, `plume`, `kink`, `bob` and `none`.
+
+## Accessories and moods
+
+`accessory` and `mood` are layer parameters.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(
+    coat = "tabby",
+    size = 30,
+    accessory = "wizard_hat",
+    mood = "sparkle"
+  ) +
+  coord_equal() +
+  theme_void()
+```
+
+Accessories: `collar`, `bowtie`, `party_hat`, `wizard_hat`, `scarf`,
+`glasses`, `headphones`, `crown`, `santa_hat`. Moods: `zzz`, `heart`,
+`sparkle`, `anger`, `sweat`, `music`, `fish`, `yarn`, `pawprints`, `shadow`,
+`box`.
 
 ## Aesthetics
 
-`geom_cat()` understands `x`, `y`, `coat`, `size` (the height of the cat in
-mm), `colour`, `fill`, `alpha`, `linewidth` and `angle`. Layer parameters
-`eyes` (`"open"` or `"closed"`), `whiskers` and `seed` control expression
-and the markings of calico and tortoise cats.
+`geom_cat()` understands `x`, `y`, `coat`, `pose`, `tail`, `size` (the
+height of the cat in mm), `colour`, `fill`, `alpha`, `linewidth` and
+`angle`. Layer parameters `eyes` (`"open"` or `"closed"`), `whiskers`,
+`seed`, `accessory`, `mood` and `silhouette` control expression, markings
+and decoration.
 
 ```r
 ggplot(cats, aes(x, y, coat = coat)) +
-  geom_cat(size = 20, angle = c(0, 15, -20, 30, 0), eyes = "closed") +
+  geom_cat(
+    size = 20,
+    angle = rep(c(0, 15, -20, 30), length.out = nrow(cats)),
+    eyes = "closed"
+  ) +
   scale_coat_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+`silhouette = TRUE` draws the cat as one solid shape, with no face,
+markings, whiskers or accessory.
+
+```r
+silhouettes <- data.frame(x = 1:2, y = 1)
+
+ggplot(silhouettes, aes(x, y)) +
+  geom_cat(data = silhouettes[1, ], coat = "calico", size = 30) +
+  geom_cat(
+    data = silhouettes[2, ],
+    coat = "calico",
+    size = 30,
+    silhouette = TRUE
+  ) +
   coord_equal() +
   theme_void()
 ```

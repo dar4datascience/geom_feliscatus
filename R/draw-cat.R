@@ -1,49 +1,3 @@
-# Colour helpers -----------------------------------------------------------
-
-mix_colour <- function(a, b, amount = 0.5) {
-  a <- grDevices::col2rgb(a)
-  b <- grDevices::col2rgb(b)
-  out <- a * (1 - amount) + b * amount
-  grDevices::rgb(out[1, ], out[2, ], out[3, ], maxColorValue = 255)
-}
-
-luminance <- function(colour) {
-  rgb <- grDevices::col2rgb(colour) / 255
-  sum(c(0.2126, 0.7152, 0.0722) * rgb[, 1])
-}
-
-# A rim that reads against both light and dark fur.
-contrast_colour <- function(colour) {
-  if (luminance(colour) < 0.5) {
-    mix_colour(colour, "#ffffff", 0.35)
-  } else {
-    mix_colour(colour, "#000000", 0.35)
-  }
-}
-
-# Geometry helpers ---------------------------------------------------------
-
-ellipse_points <- function(cx, cy, rx, ry, angle = 0, n = 40) {
-  theta <- seq(0, 2 * pi, length.out = n + 1)[-(n + 1)]
-  x <- rx * cos(theta)
-  y <- ry * sin(theta)
-  cos_a <- cos(angle)
-  sin_a <- sin(angle)
-  list(
-    x = cx + x * cos_a - y * sin_a,
-    y = cy + x * sin_a + y * cos_a
-  )
-}
-
-ellipse_grob <- function(cx, cy, rx, ry, angle = 0, gp = grid::gpar()) {
-  pts <- ellipse_points(cx, cy, rx, ry, angle)
-  grid::polygonGrob(x = pts$x, y = pts$y, gp = gp)
-}
-
-disc_to_ellipse <- function(pts, cx, cy, rx, ry) {
-  list(x = cx + rx * pts[, 1], y = cy + ry * pts[, 2])
-}
-
 # The cat ------------------------------------------------------------------
 
 # Draw one cat.  `x`/`y` are npc units, `width`/`height` are the physical size
@@ -61,239 +15,64 @@ cat_grob <- function(
   eyes = "open",
   whiskers = TRUE,
   seed = 1,
-  stroke = 1
+  stroke = 1,
+  pose = "sitting",
+  tail = "up",
+  accessory = "none",
+  mood = "none",
+  silhouette = FALSE
 ) {
   eyes <- match.arg(eyes, c("open", "closed"))
+  pose <- match_pose(pose)
+  tail <- match_tail(tail)
+  accessory <- match_accessory(accessory)
+  mood <- match_mood(mood)
+
   spec <- coat_spec(coat, seed)
 
   base <- if (is.na(fill)) spec$base else fill
   outline <- if (is.na(colour)) contrast_colour(base) else colour
   opacity <- if (is.na(alpha)) 1 else alpha
 
-  alpha_col <- function(col) ggplot2::alpha(col, opacity)
-  fill_gp <- function(col) grid::gpar(col = NA, fill = alpha_col(col))
-  line_gp <- function(col = outline, lwd = stroke) {
-    grid::gpar(
-      col = alpha_col(col),
-      fill = NA,
-      lwd = lwd,
-      linejoin = "round",
-      lineend = "round"
-    )
+  # A silhouette is one solid shape, so a white cat must not vanish on a
+  # white page.  Fall back to ink unless the user picks a colour.
+  if (silhouette) {
+    base <- if (!is.na(fill)) fill else if (!is.na(colour)) colour else "#1f1b18"
   }
 
-  # Proportions of a sitting cat, in a square viewport.
-  body_x <- 0.5
-  body_y <- 0.36
-  body_rx <- 0.26
-  body_ry <- 0.28
-  head_x <- 0.5
-  head_y <- 0.72
-  head_r <- 0.19
+  ctx <- cat_ctx(spec, base, outline, opacity, stroke, silhouette)
+  anchors <- pose_anchors(pose)
+  tail_grobs <- tail_parts(tail, pose, anchors, ctx)
 
-  body_patches <- Filter(function(p) p$part == "body", spec$patches)
-  head_patches <- Filter(function(p) p$part == "head", spec$patches)
+  back <- if (silhouette) list() else mood_parts(mood, anchors, ctx, "back")
 
-  parts <- list()
+  outer <- c(pose_outer(pose, anchors, ctx), tail_grobs$back)
+  front_tail <- tail_grobs$front
+  halo <- add_halo(outer, ctx)
+  # A tail drawn in front of the body needs its border drawn after the body
+  # too, or it disappears into fur of the same colour.
+  front_halo <- add_halo(front_tail, ctx)
 
-  tail_lwd <- stroke * 3.4
-  parts$tail_rim <- grid::xsplineGrob(
-    x = c(0.70, 0.86, 0.97, 0.95),
-    y = c(0.14, 0.10, 0.27, 0.50),
-    shape = 1,
-    open = TRUE,
-    gp = line_gp(outline, tail_lwd + stroke * 1.2)
-  )
-  parts$tail <- grid::xsplineGrob(
-    x = c(0.70, 0.86, 0.97, 0.95),
-    y = c(0.14, 0.10, 0.27, 0.50),
-    shape = 1,
-    open = TRUE,
-    gp = line_gp(spec$tail %||% base, tail_lwd)
-  )
-
-  parts$ear_left <- grid::polygonGrob(
-    x = c(0.345, 0.330, 0.465),
-    y = c(0.830, 0.980, 0.875),
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(base),
-      lwd = stroke,
-      linejoin = "round"
-    )
-  )
-  parts$ear_right <- grid::polygonGrob(
-    x = c(0.655, 0.670, 0.535),
-    y = c(0.830, 0.980, 0.875),
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(base),
-      lwd = stroke,
-      linejoin = "round"
-    )
-  )
-  parts$ear_left_inner <- grid::polygonGrob(
-    x = c(0.375, 0.362, 0.442),
-    y = c(0.848, 0.940, 0.884),
-    gp = fill_gp(spec$ear)
-  )
-  parts$ear_right_inner <- grid::polygonGrob(
-    x = c(0.625, 0.638, 0.558),
-    y = c(0.848, 0.940, 0.884),
-    gp = fill_gp(spec$ear)
-  )
-
-  parts$body <- ellipse_grob(
-    body_x,
-    body_y,
-    body_rx,
-    body_ry,
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(base),
-      lwd = stroke,
-      linejoin = "round"
-    )
-  )
-  for (patch in body_patches) {
-    pts <- disc_to_ellipse(patch$poly, body_x, body_y, body_rx, body_ry)
-    parts[[length(parts) + 1]] <- grid::polygonGrob(
-      x = pts$x,
-      y = pts$y,
-      gp = fill_gp(patch$colour)
-    )
-  }
-
-  paw_colour <- spec$paw %||% base
-  parts$paw_left <- ellipse_grob(
-    0.37,
-    0.105,
-    0.10,
-    0.048,
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(paw_colour),
-      lwd = stroke
-    )
-  )
-  parts$paw_right <- ellipse_grob(
-    0.63,
-    0.105,
-    0.10,
-    0.048,
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(paw_colour),
-      lwd = stroke
-    )
-  )
-
-  parts$head <- grid::circleGrob(
-    x = head_x,
-    y = head_y,
-    r = head_r,
-    gp = grid::gpar(
-      col = alpha_col(outline),
-      fill = alpha_col(base),
-      lwd = stroke
-    )
-  )
-  for (patch in head_patches) {
-    pts <- disc_to_ellipse(patch$poly, head_x, head_y, head_r, head_r)
-    parts[[length(parts) + 1]] <- grid::polygonGrob(
-      x = pts$x,
-      y = pts$y,
-      gp = fill_gp(patch$colour)
-    )
-  }
-
-  parts$muzzle_left <- ellipse_grob(
-    0.455,
-    0.655,
-    0.058,
-    0.045,
-    gp = fill_gp(spec$muzzle)
-  )
-  parts$muzzle_right <- ellipse_grob(
-    0.545,
-    0.655,
-    0.058,
-    0.045,
-    gp = fill_gp(spec$muzzle)
-  )
-
-  parts$nose <- grid::polygonGrob(
-    x = c(0.478, 0.522, 0.5),
-    y = c(0.680, 0.680, 0.658),
-    gp = fill_gp("#e08a9b")
-  )
-
-  mouth_gp <- line_gp(mix_colour(outline, base, 0.15), stroke * 0.7)
-  parts$mouth_left <- grid::xsplineGrob(
-    x = c(0.5, 0.472, 0.452),
-    y = c(0.658, 0.630, 0.645),
-    shape = 1,
-    open = TRUE,
-    gp = mouth_gp
-  )
-  parts$mouth_right <- grid::xsplineGrob(
-    x = c(0.5, 0.528, 0.548),
-    y = c(0.658, 0.630, 0.645),
-    shape = 1,
-    open = TRUE,
-    gp = mouth_gp
-  )
-
-  if (eyes == "open") {
-    for (side in c("left", "right")) {
-      eye_x <- if (side == "left") 0.435 else 0.565
-      parts[[paste0("eye_", side)]] <- ellipse_grob(
-        eye_x,
-        0.748,
-        0.038,
-        0.044,
-        gp = fill_gp(spec$eye)
-      )
-      parts[[paste0("pupil_", side)]] <- ellipse_grob(
-        eye_x,
-        0.748,
-        0.011,
-        0.030,
-        gp = fill_gp("#151515")
-      )
-      parts[[paste0("glint_", side)]] <- grid::circleGrob(
-        x = eye_x - 0.012,
-        y = 0.762,
-        r = 0.007,
-        gp = fill_gp("#ffffff")
-      )
-    }
+  detail <- if (silhouette) {
+    list()
   } else {
-    for (side in c("left", "right")) {
-      eye_x <- if (side == "left") 0.435 else 0.565
-      parts[[paste0("eye_", side)]] <- grid::xsplineGrob(
-        x = c(eye_x - 0.035, eye_x, eye_x + 0.035),
-        y = c(0.752, 0.735, 0.752),
-        shape = 1,
-        open = TRUE,
-        gp = line_gp(outline, stroke * 1.1)
-      )
-    }
+    c(
+      ear_grobs(anchors$head, ctx, inner = TRUE),
+      pose_patches(anchors, ctx),
+      cat_face(anchors, ctx, eyes = eyes, whiskers = whiskers)
+    )
   }
 
-  if (whiskers) {
-    whisker_gp <- line_gp(
-      mix_colour(outline, "#ffffff", 0.35),
-      max(stroke * 0.5, 0.25)
-    )
-    parts$whiskers <- grid::segmentsGrob(
-      x0 = c(0.40, 0.40, 0.40, 0.60, 0.60, 0.60),
-      y0 = c(0.668, 0.652, 0.636, 0.668, 0.652, 0.636),
-      x1 = c(0.22, 0.20, 0.22, 0.78, 0.80, 0.78),
-      y1 = c(0.700, 0.652, 0.604, 0.700, 0.652, 0.604),
-      gp = whisker_gp
+  front <- if (silhouette) {
+    list()
+  } else {
+    c(
+      accessory_parts(accessory, anchors, ctx),
+      mood_parts(mood, anchors, ctx, "front")
     )
   }
+
+  parts <- c(back, halo, outer, front_halo, front_tail, detail, front)
 
   grid::gTree(
     children = do.call(grid::gList, parts),
@@ -338,7 +117,12 @@ draw_key_cat <- function(data, params, size) {
     eyes = params$eyes %||% "open",
     whiskers = params$whiskers %||% TRUE,
     seed = params$seed %||% 1,
-    stroke = 0.9 * linewidth
+    stroke = 0.9 * linewidth,
+    pose = data$pose %||% "sitting",
+    tail = data$tail %||% "up",
+    accessory = params$accessory %||% "none",
+    mood = "none",
+    silhouette = params$silhouette %||% FALSE
   )
   # Tell the legend how big the key is, in cm.  Without this, ggplot2 sizes
   # the key from the grob and the cats make the legend very tall.
