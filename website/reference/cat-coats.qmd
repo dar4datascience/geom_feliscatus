@@ -39,7 +39,7 @@ cat_coats()
 | `"tabby"` | Brown with dark stripes on the body, forehead and tail. |
 | `"siamese"` | Cream with a dark mask, ears, paws and tail. |
 
-::: {layout-ncol=7}
+::: {layout-ncol=4}
 ![Black](../images/coat-black.png){fig-alt="A black cat with amber eyes."}
 
 ![White](../images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}

@@ -200,7 +200,7 @@ generator, so the same `seed` always gives the same cat and a different
 `seed` gives a different pattern.
 
 ```r
-seeds <- expand.grid(seed = 1:4, coat = c("calico", "tortoise"))
+seeds <- expand.grid(seed = 1:4, coat = c("calico", "tortoise", "tabby"))
 
 ggplot(seeds, aes(seed, 1, coat = coat)) +
   facet_wrap(~coat, ncol = 1) +
@@ -210,7 +210,7 @@ ggplot(seeds, aes(seed, 1, coat = coat)) +
   geom_cat(data = seeds[seeds$seed == 4, ], size = 38, seed = 4)
 ```
 
-![](images/seeds.png){fig-alt="Two rows of cats. The top row shows four calico cats with different black and orange patch layouts; the bottom row shows four tortoise cats with different mottling."}
+![](images/seeds.png){fig-alt="Three rows of cats. The first row shows four calico cats with different black and orange patch layouts; the second shows four tortoise cats with different mottling; the third shows four tabby cats with different stripe patterns."}
 
 ## Expression and rotation
 
@@ -264,16 +264,22 @@ ggplot(pastels, aes(x, y)) +
 The legend key is a small cat, drawn by `draw_key_cat()`.
 
 ```r
-ggplot(cats, aes(x, y, coat = coat)) +
+coats <- data.frame(
+  x = seq_along(cat_coats()),
+  y = 1,
+  coat = cat_coats()
+)
+
+ggplot(coats, aes(x, y, coat = coat)) +
   geom_cat(size = 20)
 ```
 
-![](images/legend.png){fig-alt="Five cats in a row with a legend whose keys are miniature cats labelled black, calico, tortoise, tuxedo and white."}
+![](images/legend.png){fig-alt="Seven cats in a row with a legend whose keys are miniature cats labelled black, calico, siamese, tabby, tortoise, tuxedo and white."}
 
 Use `scale_coat_discrete()` to set a title or labels.
 
 ```r
-ggplot(cats, aes(x, y, coat = coat)) +
+ggplot(coats, aes(x, y, coat = coat)) +
   geom_cat(size = 20) +
   scale_coat_discrete(name = "Coat", labels = toupper)
 ```

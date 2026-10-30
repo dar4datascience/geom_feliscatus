@@ -77,7 +77,7 @@ save_plot(variants, "variants.png", 10, 3)
 
 seeds <- expand.grid(
   seed = 1:4,
-  coat = c("calico", "tortoise"),
+  coat = c("calico", "tortoise", "tabby"),
   stringsAsFactors = FALSE
 )
 seeds$x <- seeds$seed
@@ -95,7 +95,7 @@ for (s in 1:4) {
     geom_cat(data = seeds[seeds$seed == s, ], size = 38, seed = s)
 }
 
-save_plot(markings, "seeds.png", 10, 4.8)
+save_plot(markings, "seeds.png", 10, 7.2)
 
 # Sizes --------------------------------------------------------------------
 
@@ -277,18 +277,18 @@ save_plot(mood_plot, "moods.png", 14, 4)
 
 silhouette <- data.frame(x = 1:2, y = 1)
 
-silhouette_plot <- pad_scales(
-  ggplot(silhouette, aes(x, y)) +
-    geom_cat(data = silhouette[1, , drop = FALSE], coat = "calico", size = 40) +
-    geom_cat(
-      data = silhouette[2, , drop = FALSE],
-      coat = "calico",
-      size = 40,
-      silhouette = TRUE
-    ) +
-    coord_cartesian(clip = "off") +
-    blank()
-)
+silhouette_plot <- ggplot(silhouette, aes(x, y)) +
+  geom_cat(data = silhouette[1, , drop = FALSE], coat = "calico", size = 40) +
+  geom_cat(
+    data = silhouette[2, , drop = FALSE],
+    coat = "calico",
+    size = 40,
+    silhouette = TRUE
+  ) +
+  scale_x_continuous(expand = expansion(mult = 0.30)) +
+  scale_y_continuous(expand = expansion(mult = 0.14)) +
+  coord_cartesian(clip = "off") +
+  blank()
 
 save_plot(silhouette_plot, "silhouette.png", 6, 3)
 

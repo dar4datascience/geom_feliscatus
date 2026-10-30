@@ -40,7 +40,7 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 
 ## The seven coats
 
-::: {layout-ncol=7}
+::: {layout-ncol=4}
 [![Black](images/coat-black.png){fig-alt="A black cat with amber eyes."}](gallery.qmd#black)
 
 [![White](images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}](gallery.qmd#white)

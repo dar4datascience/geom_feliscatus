@@ -53,7 +53,7 @@ ggplot(cats, aes(x, y, coat = coat)) +
   scale_coat_discrete(name = "Coat", labels = toupper)
 ```
 
-![](../images/legend-labels.png){fig-alt="Five cats with a legend titled Coat and uppercase labels."}
+![](../images/legend-labels.png){fig-alt="Seven cats with a legend titled Coat and uppercase labels."}
 
 The scale is also where you restrict which coats appear in the legend:
 
