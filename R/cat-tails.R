@@ -151,16 +151,19 @@ tail_parts <- function(tail, pose, a, ctx) {
   ))
 
   if (tail == "plume" && !ctx$silhouette) {
-    grobs <- c(grobs, list(named(
-      grid::xsplineGrob(
-        x = pts[, 1],
-        y = pts[, 2],
-        shape = 1,
-        open = TRUE,
-        gp = ctx$line_gp(mix_colour(colour, "#ffffff", 0.25), w * 0.55)
-      ),
-      "cat_tail_fluff"
-    )))
+    grobs <- c(
+      grobs,
+      list(named(
+        grid::xsplineGrob(
+          x = pts[, 1],
+          y = pts[, 2],
+          shape = 1,
+          open = TRUE,
+          gp = ctx$line_gp(mix_colour(colour, "#ffffff", 0.25), w * 0.55)
+        ),
+        "cat_tail_fluff"
+      ))
+    )
   }
 
   if (tail %in% c("up", "plume", "kink")) {

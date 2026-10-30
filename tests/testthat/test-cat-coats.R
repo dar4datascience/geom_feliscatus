@@ -2,7 +2,13 @@ test_that("cat_coats() lists the seven coats", {
   expect_equal(
     cat_coats(),
     c(
-      "black", "white", "tuxedo", "calico", "tortoise", "tabby", "siamese"
+      "black",
+      "white",
+      "tuxedo",
+      "calico",
+      "tortoise",
+      "tabby",
+      "siamese"
     )
   )
 })

@@ -55,19 +55,65 @@ style_emoji <- function() {
       gp = grid::gpar(col = fur, lwd = 14, lineend = "round")
     ),
     ellipse_grob(0.5, 0.36, 0.26, 0.28, gp = grid::gpar(fill = fur, col = NA)),
-    ellipse_grob(0.37, 0.105, 0.10, 0.048, gp = grid::gpar(fill = fur_light, col = NA)),
-    ellipse_grob(0.63, 0.105, 0.10, 0.048, gp = grid::gpar(fill = fur_light, col = NA)),
+    ellipse_grob(
+      0.37,
+      0.105,
+      0.10,
+      0.048,
+      gp = grid::gpar(fill = fur_light, col = NA)
+    ),
+    ellipse_grob(
+      0.63,
+      0.105,
+      0.10,
+      0.048,
+      gp = grid::gpar(fill = fur_light, col = NA)
+    ),
     poly(c(0.345, 0.330, 0.465), c(0.830, 0.980, 0.875), fill = fur),
     poly(c(0.655, 0.670, 0.535), c(0.830, 0.980, 0.875), fill = fur),
     grid::circleGrob(0.5, 0.72, 0.19, gp = grid::gpar(fill = fur, col = NA)),
     poly(c(0.375, 0.362, 0.442), c(0.848, 0.940, 0.884), fill = pink),
     poly(c(0.625, 0.638, 0.558), c(0.848, 0.940, 0.884), fill = pink),
-    ellipse_grob(0.455, 0.655, 0.058, 0.045, gp = grid::gpar(fill = cream, col = NA)),
-    ellipse_grob(0.545, 0.655, 0.058, 0.045, gp = grid::gpar(fill = cream, col = NA)),
-    ellipse_grob(0.435, 0.748, 0.038, 0.044, gp = grid::gpar(fill = ink, col = NA)),
-    ellipse_grob(0.565, 0.748, 0.038, 0.044, gp = grid::gpar(fill = ink, col = NA)),
-    grid::circleGrob(0.423, 0.762, 0.008, gp = grid::gpar(fill = "#ffffff", col = NA)),
-    grid::circleGrob(0.553, 0.762, 0.008, gp = grid::gpar(fill = "#ffffff", col = NA)),
+    ellipse_grob(
+      0.455,
+      0.655,
+      0.058,
+      0.045,
+      gp = grid::gpar(fill = cream, col = NA)
+    ),
+    ellipse_grob(
+      0.545,
+      0.655,
+      0.058,
+      0.045,
+      gp = grid::gpar(fill = cream, col = NA)
+    ),
+    ellipse_grob(
+      0.435,
+      0.748,
+      0.038,
+      0.044,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    ellipse_grob(
+      0.565,
+      0.748,
+      0.038,
+      0.044,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    grid::circleGrob(
+      0.423,
+      0.762,
+      0.008,
+      gp = grid::gpar(fill = "#ffffff", col = NA)
+    ),
+    grid::circleGrob(
+      0.553,
+      0.762,
+      0.008,
+      gp = grid::gpar(fill = "#ffffff", col = NA)
+    ),
     poly(c(0.478, 0.522, 0.5), c(0.680, 0.680, 0.658), fill = pink),
     grid::xsplineGrob(
       c(0.5, 0.472, 0.452),
@@ -124,10 +170,32 @@ style_line <- function() {
     ellipse_grob(0.538, 0.652, 0.050, 0.040, gp = stroke),
     ellipse_grob(0.435, 0.748, 0.034, 0.040, gp = stroke),
     ellipse_grob(0.565, 0.748, 0.034, 0.040, gp = stroke),
-    ellipse_grob(0.435, 0.748, 0.012, 0.028, gp = grid::gpar(fill = ink, col = NA)),
-    ellipse_grob(0.565, 0.748, 0.012, 0.028, gp = grid::gpar(fill = ink, col = NA)),
-    grid::circleGrob(0.427, 0.758, 0.005, gp = grid::gpar(fill = "#ffffff", col = NA)),
-    grid::circleGrob(0.557, 0.758, 0.005, gp = grid::gpar(fill = "#ffffff", col = NA)),
+    ellipse_grob(
+      0.435,
+      0.748,
+      0.012,
+      0.028,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    ellipse_grob(
+      0.565,
+      0.748,
+      0.012,
+      0.028,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    grid::circleGrob(
+      0.427,
+      0.758,
+      0.005,
+      gp = grid::gpar(fill = "#ffffff", col = NA)
+    ),
+    grid::circleGrob(
+      0.557,
+      0.758,
+      0.005,
+      gp = grid::gpar(fill = "#ffffff", col = NA)
+    ),
     poly(c(0.478, 0.522, 0.5), c(0.680, 0.680, 0.658), col = ink, lwd = 1.8),
     grid::xsplineGrob(
       c(0.5, 0.472, 0.452),
@@ -191,8 +259,16 @@ style_geo <- function() {
       d / sqrt(sum(d^2))
     })
     normals <- lapply(normals, function(d) c(-d[2], d[1]))
-    left <- t(vapply(seq_len(n), function(i) pts[i, ] + normals[[i]] * w, numeric(2)))
-    right <- t(vapply(seq_len(n), function(i) pts[i, ] - normals[[i]] * w, numeric(2)))
+    left <- t(vapply(
+      seq_len(n),
+      function(i) pts[i, ] + normals[[i]] * w,
+      numeric(2)
+    ))
+    right <- t(vapply(
+      seq_len(n),
+      function(i) pts[i, ] - normals[[i]] * w,
+      numeric(2)
+    ))
     outline <- poly(
       c(left[, 1], rev(right[, 1])),
       c(left[, 2], rev(right[, 2])),
@@ -212,7 +288,11 @@ style_geo <- function() {
     c(list(outline), facets)
   }
 
-  tones <- c(fur, mix_colour(fur, fur_light, 0.35), mix_colour(fur, fur_dark, 0.25))
+  tones <- c(
+    fur,
+    mix_colour(fur, fur_light, 0.35),
+    mix_colour(fur, fur_dark, 0.25)
+  )
 
   tail_pts <- cbind(
     c(0.68, 0.84, 0.96, 0.95, 0.88),
@@ -222,18 +302,80 @@ style_geo <- function() {
   g <- gl(
     strip(tail_pts, 0.055, c(fur, fur_dark)),
     facet_disc(0.5, 0.36, 0.26, 0.28, 6, tones),
-    poly(c(0.29, 0.45, 0.43, 0.31), c(0.075, 0.075, 0.115, 0.115), fill = fur_light, col = ink, lwd = 0.9),
-    poly(c(0.55, 0.71, 0.69, 0.57), c(0.075, 0.075, 0.115, 0.115), fill = fur_light, col = ink, lwd = 0.9),
-    poly(c(0.345, 0.330, 0.465), c(0.830, 0.980, 0.875), fill = fur_dark, col = ink, lwd = 0.9),
-    poly(c(0.655, 0.670, 0.535), c(0.830, 0.980, 0.875), fill = fur_dark, col = ink, lwd = 0.9),
+    poly(
+      c(0.29, 0.45, 0.43, 0.31),
+      c(0.075, 0.075, 0.115, 0.115),
+      fill = fur_light,
+      col = ink,
+      lwd = 0.9
+    ),
+    poly(
+      c(0.55, 0.71, 0.69, 0.57),
+      c(0.075, 0.075, 0.115, 0.115),
+      fill = fur_light,
+      col = ink,
+      lwd = 0.9
+    ),
+    poly(
+      c(0.345, 0.330, 0.465),
+      c(0.830, 0.980, 0.875),
+      fill = fur_dark,
+      col = ink,
+      lwd = 0.9
+    ),
+    poly(
+      c(0.655, 0.670, 0.535),
+      c(0.830, 0.980, 0.875),
+      fill = fur_dark,
+      col = ink,
+      lwd = 0.9
+    ),
     facet_disc(0.5, 0.72, 0.19, 0.19, 8, tones),
-    poly(c(0.378, 0.366, 0.440), c(0.852, 0.930, 0.886), fill = pink, col = ink, lwd = 0.8),
-    poly(c(0.622, 0.634, 0.560), c(0.852, 0.930, 0.886), fill = pink, col = ink, lwd = 0.8),
-    poly(c(0.44, 0.50, 0.50, 0.44), c(0.690, 0.690, 0.645, 0.655), fill = cream, col = ink, lwd = 0.8),
-    poly(c(0.56, 0.50, 0.50, 0.56), c(0.690, 0.690, 0.645, 0.655), fill = cream, col = ink, lwd = 0.8),
-    poly(c(0.435, 0.465, 0.435, 0.405), c(0.775, 0.748, 0.721, 0.748), fill = ink),
-    poly(c(0.565, 0.595, 0.565, 0.535), c(0.775, 0.748, 0.721, 0.748), fill = ink),
-    poly(c(0.478, 0.522, 0.5), c(0.700, 0.700, 0.676), fill = pink, col = ink, lwd = 0.8),
+    poly(
+      c(0.378, 0.366, 0.440),
+      c(0.852, 0.930, 0.886),
+      fill = pink,
+      col = ink,
+      lwd = 0.8
+    ),
+    poly(
+      c(0.622, 0.634, 0.560),
+      c(0.852, 0.930, 0.886),
+      fill = pink,
+      col = ink,
+      lwd = 0.8
+    ),
+    poly(
+      c(0.44, 0.50, 0.50, 0.44),
+      c(0.690, 0.690, 0.645, 0.655),
+      fill = cream,
+      col = ink,
+      lwd = 0.8
+    ),
+    poly(
+      c(0.56, 0.50, 0.50, 0.56),
+      c(0.690, 0.690, 0.645, 0.655),
+      fill = cream,
+      col = ink,
+      lwd = 0.8
+    ),
+    poly(
+      c(0.435, 0.465, 0.435, 0.405),
+      c(0.775, 0.748, 0.721, 0.748),
+      fill = ink
+    ),
+    poly(
+      c(0.565, 0.595, 0.565, 0.535),
+      c(0.775, 0.748, 0.721, 0.748),
+      fill = ink
+    ),
+    poly(
+      c(0.478, 0.522, 0.5),
+      c(0.700, 0.700, 0.676),
+      fill = pink,
+      col = ink,
+      lwd = 0.8
+    ),
     grid::segmentsGrob(
       x0 = c(0.40, 0.40, 0.60, 0.60),
       y0 = c(0.668, 0.640, 0.668, 0.640),
@@ -249,7 +391,13 @@ style_geo <- function() {
 # One shape, zero internal detail.  Recognition comes from the ears and tail.
 style_silhouette <- function() {
   solid <- "#1f1b18"
-  fill_gp <- grid::gpar(fill = solid, col = solid, lwd = 0, linejoin = "round", lineend = "round")
+  fill_gp <- grid::gpar(
+    fill = solid,
+    col = solid,
+    lwd = 0,
+    linejoin = "round",
+    lineend = "round"
+  )
   g <- gl(
     grid::xsplineGrob(
       c(0.70, 0.86, 0.97, 0.94),
@@ -261,8 +409,20 @@ style_silhouette <- function() {
     ellipse_grob(0.5, 0.36, 0.26, 0.28, gp = fill_gp),
     ellipse_grob(0.37, 0.105, 0.10, 0.048, gp = fill_gp),
     ellipse_grob(0.63, 0.105, 0.10, 0.048, gp = fill_gp),
-    poly(c(0.345, 0.330, 0.465), c(0.830, 0.980, 0.875), fill = solid, col = solid, lwd = 0),
-    poly(c(0.655, 0.670, 0.535), c(0.830, 0.980, 0.875), fill = solid, col = solid, lwd = 0),
+    poly(
+      c(0.345, 0.330, 0.465),
+      c(0.830, 0.980, 0.875),
+      fill = solid,
+      col = solid,
+      lwd = 0
+    ),
+    poly(
+      c(0.655, 0.670, 0.535),
+      c(0.830, 0.980, 0.875),
+      fill = solid,
+      col = solid,
+      lwd = 0
+    ),
     grid::circleGrob(0.5, 0.72, 0.19, gp = fill_gp)
   )
   grid::gTree(children = g)
@@ -271,41 +431,185 @@ style_silhouette <- function() {
 # 5. Sticker ----------------------------------------------------------------
 # A die-cut white border, then a flat cat with a crisp ink outline.
 style_sticker <- function() {
-  halo <- grid::gpar(col = "#ffffff", fill = "#ffffff", lwd = 14, linejoin = "round", lineend = "round")
+  halo <- grid::gpar(
+    col = "#ffffff",
+    fill = "#ffffff",
+    lwd = 14,
+    linejoin = "round",
+    lineend = "round"
+  )
   edge <- grid::gpar(col = ink, fill = fur, lwd = 2.4, linejoin = "round")
   g <- gl(
     # halo
-    grid::xsplineGrob(c(0.70, 0.86, 0.97, 0.94), c(0.14, 0.10, 0.26, 0.48), shape = 1, open = TRUE, gp = halo),
+    grid::xsplineGrob(
+      c(0.70, 0.86, 0.97, 0.94),
+      c(0.14, 0.10, 0.26, 0.48),
+      shape = 1,
+      open = TRUE,
+      gp = halo
+    ),
     ellipse_grob(0.5, 0.36, 0.26, 0.28, gp = halo),
     ellipse_grob(0.37, 0.105, 0.10, 0.048, gp = halo),
     ellipse_grob(0.63, 0.105, 0.10, 0.048, gp = halo),
-    poly(c(0.345, 0.330, 0.465), c(0.830, 0.980, 0.875), fill = "#ffffff", col = "#ffffff", lwd = 14),
-    poly(c(0.655, 0.670, 0.535), c(0.830, 0.980, 0.875), fill = "#ffffff", col = "#ffffff", lwd = 14),
+    poly(
+      c(0.345, 0.330, 0.465),
+      c(0.830, 0.980, 0.875),
+      fill = "#ffffff",
+      col = "#ffffff",
+      lwd = 14
+    ),
+    poly(
+      c(0.655, 0.670, 0.535),
+      c(0.830, 0.980, 0.875),
+      fill = "#ffffff",
+      col = "#ffffff",
+      lwd = 14
+    ),
     grid::circleGrob(0.5, 0.72, 0.19, gp = halo),
     # cat
-    grid::xsplineGrob(c(0.70, 0.86, 0.97, 0.94), c(0.14, 0.10, 0.26, 0.48), shape = 1, open = TRUE, gp = grid::gpar(col = "#ffffff", lwd = 20, lineend = "round")),
-    grid::xsplineGrob(c(0.70, 0.86, 0.97, 0.94), c(0.14, 0.10, 0.26, 0.48), shape = 1, open = TRUE, gp = grid::gpar(col = ink, lwd = 15, lineend = "round")),
-    grid::xsplineGrob(c(0.70, 0.86, 0.97, 0.94), c(0.14, 0.10, 0.26, 0.48), shape = 1, open = TRUE, gp = grid::gpar(col = fur, lwd = 10, lineend = "round")),
+    grid::xsplineGrob(
+      c(0.70, 0.86, 0.97, 0.94),
+      c(0.14, 0.10, 0.26, 0.48),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = "#ffffff", lwd = 20, lineend = "round")
+    ),
+    grid::xsplineGrob(
+      c(0.70, 0.86, 0.97, 0.94),
+      c(0.14, 0.10, 0.26, 0.48),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = ink, lwd = 15, lineend = "round")
+    ),
+    grid::xsplineGrob(
+      c(0.70, 0.86, 0.97, 0.94),
+      c(0.14, 0.10, 0.26, 0.48),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = fur, lwd = 10, lineend = "round")
+    ),
     ellipse_grob(0.5, 0.36, 0.26, 0.28, gp = edge),
-    ellipse_grob(0.37, 0.105, 0.10, 0.048, gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)),
-    ellipse_grob(0.63, 0.105, 0.10, 0.048, gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)),
-    poly(c(0.345, 0.330, 0.465), c(0.830, 0.980, 0.875), fill = fur, col = ink, lwd = 2.4),
-    poly(c(0.655, 0.670, 0.535), c(0.830, 0.980, 0.875), fill = fur, col = ink, lwd = 2.4),
+    ellipse_grob(
+      0.37,
+      0.105,
+      0.10,
+      0.048,
+      gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)
+    ),
+    ellipse_grob(
+      0.63,
+      0.105,
+      0.10,
+      0.048,
+      gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)
+    ),
+    poly(
+      c(0.345, 0.330, 0.465),
+      c(0.830, 0.980, 0.875),
+      fill = fur,
+      col = ink,
+      lwd = 2.4
+    ),
+    poly(
+      c(0.655, 0.670, 0.535),
+      c(0.830, 0.980, 0.875),
+      fill = fur,
+      col = ink,
+      lwd = 2.4
+    ),
     grid::circleGrob(0.5, 0.72, 0.19, gp = edge),
-    poly(c(0.375, 0.362, 0.442), c(0.848, 0.940, 0.884), fill = pink, col = ink, lwd = 1.2),
-    poly(c(0.625, 0.638, 0.558), c(0.848, 0.940, 0.884), fill = pink, col = ink, lwd = 1.2),
+    poly(
+      c(0.375, 0.362, 0.442),
+      c(0.848, 0.940, 0.884),
+      fill = pink,
+      col = ink,
+      lwd = 1.2
+    ),
+    poly(
+      c(0.625, 0.638, 0.558),
+      c(0.848, 0.940, 0.884),
+      fill = pink,
+      col = ink,
+      lwd = 1.2
+    ),
     # forehead stripes
-    grid::xsplineGrob(c(0.455, 0.470, 0.475), c(0.845, 0.855, 0.830), shape = 1, open = TRUE, gp = grid::gpar(col = fur_dark, lwd = 3, lineend = "round")),
-    grid::xsplineGrob(c(0.545, 0.530, 0.525), c(0.845, 0.855, 0.830), shape = 1, open = TRUE, gp = grid::gpar(col = fur_dark, lwd = 3, lineend = "round")),
-    ellipse_grob(0.455, 0.655, 0.058, 0.045, gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)),
-    ellipse_grob(0.545, 0.655, 0.058, 0.045, gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)),
-    ellipse_grob(0.435, 0.748, 0.038, 0.044, gp = grid::gpar(fill = "#ffffff", col = ink, lwd = 2.2)),
-    ellipse_grob(0.565, 0.748, 0.038, 0.044, gp = grid::gpar(fill = "#ffffff", col = ink, lwd = 2.2)),
-    ellipse_grob(0.435, 0.748, 0.013, 0.034, gp = grid::gpar(fill = ink, col = NA)),
-    ellipse_grob(0.565, 0.748, 0.013, 0.034, gp = grid::gpar(fill = ink, col = NA)),
-    poly(c(0.478, 0.522, 0.5), c(0.680, 0.680, 0.658), fill = pink, col = ink, lwd = 1.6),
-    grid::xsplineGrob(c(0.5, 0.472, 0.452), c(0.658, 0.630, 0.645), shape = 1, open = TRUE, gp = grid::gpar(col = ink, lwd = 2, lineend = "round")),
-    grid::xsplineGrob(c(0.5, 0.528, 0.548), c(0.658, 0.630, 0.645), shape = 1, open = TRUE, gp = grid::gpar(col = ink, lwd = 2, lineend = "round")),
+    grid::xsplineGrob(
+      c(0.455, 0.470, 0.475),
+      c(0.845, 0.855, 0.830),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = fur_dark, lwd = 3, lineend = "round")
+    ),
+    grid::xsplineGrob(
+      c(0.545, 0.530, 0.525),
+      c(0.845, 0.855, 0.830),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = fur_dark, lwd = 3, lineend = "round")
+    ),
+    ellipse_grob(
+      0.455,
+      0.655,
+      0.058,
+      0.045,
+      gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)
+    ),
+    ellipse_grob(
+      0.545,
+      0.655,
+      0.058,
+      0.045,
+      gp = grid::gpar(col = ink, fill = cream, lwd = 2.4)
+    ),
+    ellipse_grob(
+      0.435,
+      0.748,
+      0.038,
+      0.044,
+      gp = grid::gpar(fill = "#ffffff", col = ink, lwd = 2.2)
+    ),
+    ellipse_grob(
+      0.565,
+      0.748,
+      0.038,
+      0.044,
+      gp = grid::gpar(fill = "#ffffff", col = ink, lwd = 2.2)
+    ),
+    ellipse_grob(
+      0.435,
+      0.748,
+      0.013,
+      0.034,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    ellipse_grob(
+      0.565,
+      0.748,
+      0.013,
+      0.034,
+      gp = grid::gpar(fill = ink, col = NA)
+    ),
+    poly(
+      c(0.478, 0.522, 0.5),
+      c(0.680, 0.680, 0.658),
+      fill = pink,
+      col = ink,
+      lwd = 1.6
+    ),
+    grid::xsplineGrob(
+      c(0.5, 0.472, 0.452),
+      c(0.658, 0.630, 0.645),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = ink, lwd = 2, lineend = "round")
+    ),
+    grid::xsplineGrob(
+      c(0.5, 0.528, 0.548),
+      c(0.658, 0.630, 0.645),
+      shape = 1,
+      open = TRUE,
+      gp = grid::gpar(col = ink, lwd = 2, lineend = "round")
+    ),
     grid::segmentsGrob(
       x0 = c(0.40, 0.40, 0.40, 0.60, 0.60, 0.60),
       y0 = c(0.668, 0.652, 0.636, 0.668, 0.652, 0.636),
@@ -351,15 +655,18 @@ style_pixel <- function() {
   )
   n <- length(sprite)
   cols <- nchar(sprite[1])
-  cells <- do.call(rbind, lapply(seq_len(n), function(r) {
-    chars <- strsplit(sprite[r], "")[[1]]
-    data.frame(
-      x = seq_len(cols),
-      y = n - r + 1,
-      fill = unname(keys[chars]),
-      stringsAsFactors = FALSE
-    )
-  }))
+  cells <- do.call(
+    rbind,
+    lapply(seq_len(n), function(r) {
+      chars <- strsplit(sprite[r], "")[[1]]
+      data.frame(
+        x = seq_len(cols),
+        y = n - r + 1,
+        fill = unname(keys[chars]),
+        stringsAsFactors = FALSE
+      )
+    })
+  )
   cells <- cells[!is.na(cells$fill), ]
   grobs <- lapply(seq_len(nrow(cells)), function(i) {
     grid::rectGrob(
@@ -377,14 +684,20 @@ styles <- list(
   "emoji-flat" = list(fn = style_emoji, note = "solid fills, no outline"),
   "line-art" = list(fn = style_line, note = "one stroke, no fills"),
   "geometric / low-poly" = list(fn = style_geo, note = "flat-shaded facets"),
-  "pure silhouette" = list(fn = style_silhouette, note = "one shape, zero detail"),
+  "pure silhouette" = list(
+    fn = style_silhouette,
+    note = "one shape, zero detail"
+  ),
   "sticker" = list(fn = style_sticker, note = "die-cut white border"),
   "pixel art" = list(fn = style_pixel, note = "20 x 19 sprite")
 )
 
 draw_cell <- function(fn, size = NULL) {
   if (is.null(size)) {
-    pushViewport(viewport(width = unit(0.74, "snpc"), height = unit(0.74, "snpc")))
+    pushViewport(viewport(
+      width = unit(0.74, "snpc"),
+      height = unit(0.74, "snpc")
+    ))
   } else {
     pushViewport(viewport(width = unit(size, "mm"), height = unit(size, "mm")))
   }
@@ -397,7 +710,9 @@ styles_sheet <- function(file) {
   png(file, width = 11, height = 8.4, units = "in", res = 220, bg = "white")
   on.exit(dev.off())
   grid.newpage()
-  pushViewport(viewport(layout = grid.layout(3, 3, heights = unit(c(0.14, 1, 1), "null"))))
+  pushViewport(viewport(
+    layout = grid.layout(3, 3, heights = unit(c(0.14, 1, 1), "null"))
+  ))
 
   pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1:3))
   grid.text(
@@ -436,16 +751,25 @@ styles_sheet <- function(file) {
 # Legibility sheet ----------------------------------------------------------
 sizes_sheet <- function(file) {
   sizes <- c(8, 12, 18)
-  short <- c("emoji-flat", "line-art", "low-poly", "silhouette", "sticker", "pixel art")
+  short <- c(
+    "emoji-flat",
+    "line-art",
+    "low-poly",
+    "silhouette",
+    "sticker",
+    "pixel art"
+  )
   png(file, width = 9, height = 9.4, units = "in", res = 220, bg = "white")
   on.exit(dev.off())
   grid.newpage()
-  pushViewport(viewport(layout = grid.layout(
-    9,
-    4,
-    widths = unit(c(0.85, 1, 1, 1), "null"),
-    heights = unit(c(1, 0.55, rep(1, 6), 0.18), "null")
-  )))
+  pushViewport(viewport(
+    layout = grid.layout(
+      9,
+      4,
+      widths = unit(c(0.85, 1, 1, 1), "null"),
+      heights = unit(c(1, 0.55, rep(1, 6), 0.18), "null")
+    )
+  ))
 
   pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2:4))
   grid.text(
@@ -492,4 +816,6 @@ sizes_sheet <- function(file) {
 dir.create("dev/references", showWarnings = FALSE)
 styles_sheet("dev/references/abstraction-styles.png")
 sizes_sheet("dev/references/abstraction-sizes.png")
-message("wrote dev/references/abstraction-styles.png and dev/references/abstraction-sizes.png")
+message(
+  "wrote dev/references/abstraction-styles.png and dev/references/abstraction-sizes.png"
+)

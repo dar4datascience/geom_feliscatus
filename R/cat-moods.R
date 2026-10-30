@@ -138,7 +138,11 @@ mood_parts <- function(mood, a, ctx, where = c("back", "front")) {
           "z",
           x = 0.78,
           y = 0.80,
-          gp = grid::gpar(col = "#5b4bb5", fontsize = fs * 0.8, fontface = "bold")
+          gp = grid::gpar(
+            col = "#5b4bb5",
+            fontsize = fs * 0.8,
+            fontface = "bold"
+          )
         ),
         grid::textGrob(
           "z",
@@ -150,7 +154,11 @@ mood_parts <- function(mood, a, ctx, where = c("back", "front")) {
           "z",
           x = 0.93,
           y = 0.97,
-          gp = grid::gpar(col = "#5b4bb5", fontsize = fs * 1.25, fontface = "bold")
+          gp = grid::gpar(
+            col = "#5b4bb5",
+            fontsize = fs * 1.25,
+            fontface = "bold"
+          )
         )
       )
     } else {
@@ -207,7 +215,11 @@ mood_parts <- function(mood, a, ctx, where = c("back", "front")) {
           "\u266b",
           x = 0.89,
           y = 0.92,
-          gp = grid::gpar(col = "#8e44ad", fontsize = fs * 1.1, fontface = "bold")
+          gp = grid::gpar(
+            col = "#8e44ad",
+            fontsize = fs * 1.1,
+            fontface = "bold"
+          )
         )
       )
     } else {

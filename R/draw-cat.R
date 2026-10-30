@@ -37,7 +37,13 @@ cat_grob <- function(
   # A silhouette is one solid shape, so a white cat must not vanish on a
   # white page.  Fall back to ink unless the user picks a colour.
   if (silhouette) {
-    base <- if (!is.na(fill)) fill else if (!is.na(colour)) colour else "#1f1b18"
+    base <- if (!is.na(fill)) {
+      fill
+    } else if (!is.na(colour)) {
+      colour
+    } else {
+      "#1f1b18"
+    }
   }
 
   ctx <- cat_ctx(spec, base, outline, opacity, stroke, silhouette)

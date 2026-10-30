@@ -114,11 +114,36 @@ sitting_outer <- function(a, ctx) {
       "cat_body"
     )),
     list(
-      named(outer_ellipse(0.37, 0.105, 0.10, 0.048, ctx$spec$paw %||% ctx$base, ctx), "cat_paw_left"),
-      named(outer_ellipse(0.63, 0.105, 0.10, 0.048, ctx$spec$paw %||% ctx$base, ctx), "cat_paw_right")
+      named(
+        outer_ellipse(
+          0.37,
+          0.105,
+          0.10,
+          0.048,
+          ctx$spec$paw %||% ctx$base,
+          ctx
+        ),
+        "cat_paw_left"
+      ),
+      named(
+        outer_ellipse(
+          0.63,
+          0.105,
+          0.10,
+          0.048,
+          ctx$spec$paw %||% ctx$base,
+          ctx
+        ),
+        "cat_paw_right"
+      )
     ),
     list(named(
-      grid::circleGrob(a$head[1], a$head[2], a$head[3], gp = ctx$outer_gp(ctx$base)),
+      grid::circleGrob(
+        a$head[1],
+        a$head[2],
+        a$head[3],
+        gp = ctx$outer_gp(ctx$base)
+      ),
       "cat_head"
     ))
   )
@@ -132,11 +157,22 @@ loaf_outer <- function(a, ctx) {
       "cat_body"
     )),
     list(
-      named(outer_ellipse(0.42, 0.10, 0.07, 0.035, ctx$spec$paw %||% ctx$base, ctx), "cat_paw_left"),
-      named(outer_ellipse(0.58, 0.10, 0.07, 0.035, ctx$spec$paw %||% ctx$base, ctx), "cat_paw_right")
+      named(
+        outer_ellipse(0.42, 0.10, 0.07, 0.035, ctx$spec$paw %||% ctx$base, ctx),
+        "cat_paw_left"
+      ),
+      named(
+        outer_ellipse(0.58, 0.10, 0.07, 0.035, ctx$spec$paw %||% ctx$base, ctx),
+        "cat_paw_right"
+      )
     ),
     list(named(
-      grid::circleGrob(a$head[1], a$head[2], a$head[3], gp = ctx$outer_gp(ctx$base)),
+      grid::circleGrob(
+        a$head[1],
+        a$head[2],
+        a$head[3],
+        gp = ctx$outer_gp(ctx$base)
+      ),
       "cat_head"
     ))
   )
@@ -149,9 +185,17 @@ curled_outer <- function(a, ctx) {
       outer_ellipse(a$body[1], a$body[2], a$body[3], a$body[4], ctx$base, ctx),
       "cat_body"
     )),
-    list(named(outer_ellipse(0.46, 0.17, 0.06, 0.035, ctx$spec$paw %||% ctx$base, ctx), "cat_paw")),
     list(named(
-      grid::circleGrob(a$head[1], a$head[2], a$head[3], gp = ctx$outer_gp(ctx$base)),
+      outer_ellipse(0.46, 0.17, 0.06, 0.035, ctx$spec$paw %||% ctx$base, ctx),
+      "cat_paw"
+    )),
+    list(named(
+      grid::circleGrob(
+        a$head[1],
+        a$head[2],
+        a$head[3],
+        gp = ctx$outer_gp(ctx$base)
+      ),
       "cat_head"
     ))
   )
@@ -173,12 +217,24 @@ standing_outer <- function(a, ctx) {
     )),
     lapply(seq_along(legs), function(i) {
       named(
-        outer_ellipse(legs[i], 0.055, 0.05, 0.03, ctx$spec$paw %||% ctx$base, ctx),
+        outer_ellipse(
+          legs[i],
+          0.055,
+          0.05,
+          0.03,
+          ctx$spec$paw %||% ctx$base,
+          ctx
+        ),
         paste0("cat_paw_", i)
       )
     }),
     list(named(
-      grid::circleGrob(a$head[1], a$head[2], a$head[3], gp = ctx$outer_gp(ctx$base)),
+      grid::circleGrob(
+        a$head[1],
+        a$head[2],
+        a$head[3],
+        gp = ctx$outer_gp(ctx$base)
+      ),
       "cat_head"
     ))
   )

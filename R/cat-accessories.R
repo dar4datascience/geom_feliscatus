@@ -247,9 +247,23 @@ accessory_parts <- function(accessory, a, ctx) {
         "#f1c40f",
         ctx
       ),
-      acc_circle(hx - hr * 0.38, hy + hr * 1.08, hr * 0.060, "#c0392b", ctx, lwd = 0),
+      acc_circle(
+        hx - hr * 0.38,
+        hy + hr * 1.08,
+        hr * 0.060,
+        "#c0392b",
+        ctx,
+        lwd = 0
+      ),
       acc_circle(hx, hy + hr * 1.16, hr * 0.060, "#2e86c1", ctx, lwd = 0),
-      acc_circle(hx + hr * 0.38, hy + hr * 1.08, hr * 0.060, "#27ae60", ctx, lwd = 0)
+      acc_circle(
+        hx + hr * 0.38,
+        hy + hr * 1.08,
+        hr * 0.060,
+        "#27ae60",
+        ctx,
+        lwd = 0
+      )
     ),
     santa_hat = list(
       acc_poly(

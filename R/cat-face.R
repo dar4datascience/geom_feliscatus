@@ -32,7 +32,10 @@ cat_face <- function(a, ctx, eyes = "open", whiskers = TRUE) {
     gp = ctx$fill_gp("#e08a9b")
   )
 
-  mouth_gp <- ctx$line_gp(mix_colour(ctx$outline, ctx$base, 0.15), ctx$stroke * 0.7)
+  mouth_gp <- ctx$line_gp(
+    mix_colour(ctx$outline, ctx$base, 0.15),
+    ctx$stroke * 0.7
+  )
   parts$mouth_left <- grid::xsplineGrob(
     x = fx(c(0.5, 0.472, 0.452)),
     y = fy(c(0.658, 0.630, 0.645)),
