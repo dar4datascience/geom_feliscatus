@@ -1,0 +1,172 @@
+---
+title: "Gallery"
+subtitle: "Everything the geom can draw"
+toc: true
+---
+
+Every image on this page was rendered with `geom_cat()`. The code under
+each figure is the code that made it.
+
+## The five coats {#coats}
+
+::: {layout-ncol=3}
+[![Black](images/coat-black.png){fig-alt="A black cat with amber eyes."}](#black)
+
+[![White](images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}](#white)
+
+[![Tuxedo](images/coat-tuxedo.png){fig-alt="A black cat with a white bib, chin and paws."}](#tuxedo)
+
+[![Calico](images/coat-calico.png){fig-alt="A white cat with orange and black patches."}](#calico)
+
+[![Tortoise](images/coat-tortoise.png){fig-alt="A brown cat with dark and ginger mottling."}](#tortoise)
+:::
+
+### Black {#black}
+
+Solid black fur, amber eyes and a light rim so the silhouette reads on dark
+backgrounds.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "black", size = 40)
+```
+
+### White {#white}
+
+Cream-white fur, blue eyes and a grey rim.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "white", size = 40)
+```
+
+### Tuxedo {#tuxedo}
+
+Black with a white bib, chin and paws.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "tuxedo", size = 40)
+```
+
+### Calico {#calico}
+
+White with orange and black patches on the head, body and tail.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "calico", size = 40)
+```
+
+### Tortoise {#tortoise}
+
+Brown with dark and ginger mottling. `"tortoiseshell"` and `"tortie"` are
+accepted as aliases.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "tortoise", size = 40)
+```
+
+## Markings vary with the seed
+
+Calico and tortoise markings are generated from a small deterministic
+generator, so the same `seed` always gives the same cat and a different
+`seed` gives a different pattern.
+
+```r
+seeds <- expand.grid(seed = 1:4, coat = c("calico", "tortoise"))
+
+ggplot(seeds, aes(seed, 1, coat = coat)) +
+  facet_wrap(~coat, ncol = 1) +
+  geom_cat(data = seeds[seeds$seed == 1, ], size = 38, seed = 1) +
+  geom_cat(data = seeds[seeds$seed == 2, ], size = 38, seed = 2) +
+  geom_cat(data = seeds[seeds$seed == 3, ], size = 38, seed = 3) +
+  geom_cat(data = seeds[seeds$seed == 4, ], size = 38, seed = 4)
+```
+
+![](images/seeds.png){fig-alt="Two rows of cats. The top row shows four calico cats with different black and orange patch layouts; the bottom row shows four tortoise cats with different mottling."}
+
+## Expression and rotation
+
+`eyes` and `whiskers` are layer parameters; `angle` is an aesthetic.
+
+```r
+cats <- data.frame(x = 1:5, y = 1, coat = cat_coats())
+
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(
+    size = c(26, 30, 26, 30, 26),
+    angle = c(0, 15, -20, 30, 0),
+    eyes = "closed",
+    whiskers = FALSE
+  )
+```
+
+![](images/variants.png){fig-alt="Five cats at different rotations, all with closed eyes and no whiskers."}
+
+## Size
+
+`size` is the height of the cat in millimetres.
+
+```r
+ggplot(data.frame(x = 1:5, y = 1), aes(x, y)) +
+  geom_cat(coat = "tuxedo", size = c(8, 14, 20, 26, 32))
+```
+
+![](images/sizes.png){fig-alt="Five tuxedo cats of increasing size, from 8 mm to 32 mm tall."}
+
+## Custom fur
+
+`fill` replaces the base fur colour while keeping the coat's markings.
+`colour` sets the outline.
+
+```r
+pastels <- data.frame(
+  x = 1:3,
+  y = 1,
+  fur = c("#f6d5e0", "#d5e8f6", "#e6f6d5")
+)
+
+ggplot(pastels, aes(x, y)) +
+  geom_cat(coat = "white", fill = pastels$fur, size = 40)
+```
+
+![](images/colours.png){fig-alt="Three white cats with pink, light blue and light green fur."}
+
+## Legends
+
+The legend key is a small cat, drawn by `draw_key_cat()`.
+
+```r
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(size = 20)
+```
+
+![](images/legend.png){fig-alt="Five cats in a row with a legend whose keys are miniature cats labelled black, calico, tortoise, tuxedo and white."}
+
+Use `scale_coat_discrete()` to set a title or labels.
+
+```r
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(size = 20) +
+  scale_coat_discrete(name = "Coat", labels = toupper)
+```
+
+![](images/legend-labels.png){fig-alt="The same five cats with a legend titled Coat and uppercase labels."}
+
+## Cats in a plot
+
+A cat is just a mark, so it composes with the rest of the grammar. Map
+`size` when the cats themselves should carry a variable.
+
+```r
+cars <- transform(mtcars[1:10, ], coat = rep(cat_coats(), length.out = 10))
+
+ggplot(cars, aes(wt, mpg, coat = coat, size = hp)) +
+  geom_cat() +
+  scale_size_area(max_size = 14) +
+  theme_minimal()
+```
+
+![](images/scatter.png){fig-alt="A scatterplot of ten cars where each point is a cat whose size grows with horsepower."}

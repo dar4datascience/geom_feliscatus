@@ -1,0 +1,20 @@
+---
+title: "Reference"
+subtitle: "Exported objects"
+toc: false
+---
+
+| Object | Description |
+|:--|:--|
+| [`geom_cat()`](geom-cat.qmd) | Draws a cat at each observation, with five coats. |
+| [`cat_coats()`](cat-coats.qmd) | Returns the names of the supported coats. |
+| [`scale_coat_discrete()`](scale-coat.qmd) | Identity scale for the `coat` aesthetic, with a legend. |
+| [`GeomCat`](geom-cat.qmd#the-ggproto-object) | The ggproto object behind the geom. |
+
+The package also has two vignettes:
+
+- `vignette("geom-feliscatus")` — a user guide.
+- `vignette("extending-ggplot2")` — how the geom is built.
+
+See the [extending guide](../extending.qmd) for a web version of the
+second one.

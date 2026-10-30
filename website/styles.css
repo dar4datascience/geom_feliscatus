@@ -1,0 +1,90 @@
+:root {
+  --cat-ink: #232323;
+  --cat-paper: #f7f3ea;
+  --cat-ginger: #b5651d;
+  --cat-rose: #e08a9b;
+}
+
+.navbar {
+  background-color: var(--cat-ink);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .dropdown-item {
+  color: var(--cat-paper);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link.active,
+.navbar .navbar-nav .nav-link.active {
+  color: var(--cat-rose);
+}
+
+a {
+  color: var(--cat-ginger);
+}
+
+a:hover {
+  color: #8a4b14;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--cat-ink);
+}
+
+h2 {
+  border-bottom: 2px solid var(--cat-paper);
+  padding-bottom: 0.25rem;
+}
+
+.hero {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+
+.hero img {
+  max-width: 100%;
+  border-radius: 1rem;
+}
+
+.quarto-title .subtitle {
+  color: #6c6c6c;
+}
+
+.callout-note {
+  border-left-color: var(--cat-ginger);
+}
+
+.coat-table td:first-child {
+  white-space: nowrap;
+}
+
+code {
+  color: #8a4b14;
+}
+
+/* Warm up the Mermaid diagram */
+.mermaid-js .node rect,
+.mermaid-js .node circle,
+.mermaid-js .node polygon {
+  fill: var(--cat-paper) !important;
+  stroke: var(--cat-ginger) !important;
+}
+
+.mermaid-js .nodeLabel,
+.mermaid-js .label {
+  color: var(--cat-ink) !important;
+}
+
+.mermaid-js .edgePath path {
+  stroke: var(--cat-ginger) !important;
+}
+
+.mermaid-js .marker {
+  fill: var(--cat-ginger) !important;
+  stroke: var(--cat-ginger) !important;
+}

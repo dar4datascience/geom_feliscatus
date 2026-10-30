@@ -1,0 +1,61 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "geomfeliscatus"
+  description: "Cat-themed geoms for ggplot2"
+  site-url: https://dar4datascience.github.io/geom_feliscatus/
+  repo-url: https://github.com/dar4datascience/geom_feliscatus
+  repo-actions: [edit, issue]
+  image: images/hero.png
+  favicon: images/favicon.png
+  search: true
+  page-navigation: true
+  navbar:
+    pinned: true
+    left:
+      - text: "Get started"
+        href: index.qmd
+      - text: "Gallery"
+        href: gallery.qmd
+      - text: "Reference"
+        menu:
+          - text: "geom_cat()"
+            href: reference/geom-cat.qmd
+          - text: "cat_coats()"
+            href: reference/cat-coats.qmd
+          - text: "scale_coat_discrete()"
+            href: reference/scale-coat.qmd
+          - text: "GeomCat"
+            href: reference/geom-cat.qmd#the-ggproto-object
+          - text: "All objects"
+            href: reference/index.qmd
+      - text: "Extending"
+        href: extending.qmd
+    right:
+      - icon: github
+        href: https://github.com/dar4datascience/geom_feliscatus
+        aria-label: GitHub
+  page-footer:
+    left: "geomfeliscatus · MIT licensed"
+    right:
+      - text: "GitHub"
+        href: https://github.com/dar4datascience/geom_feliscatus
+      - text: "Quarto"
+        href: https://quarto.org
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+    fig-align: center
+    lightbox: true
+    link-external-newwindow: true
+
+execute:
+  echo: false

@@ -54,3 +54,10 @@ Rplots.pdf
 
 # Local preview output
 dev/output/
+
+# Quarto website output
+website/_site/
+website/.quarto/
+
+# Playwright artefacts
+.playwright-mcp/
