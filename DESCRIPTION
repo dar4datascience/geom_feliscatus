@@ -1,0 +1,33 @@
+Package: geomfeliscatus
+Title: Cat-Themed Geoms for 'ggplot2'
+Version: 0.0.0.9000
+Authors@R:
+    person("Daniela", "Mieva", email = "danielamieva@dar4datascience.com",
+           role = c("aut", "cre"))
+Description: A cat-themed geom for 'ggplot2'.  'geom_cat()' draws cats at
+    x/y positions in five coats (black, white, tuxedo, calico and tortoise),
+    supports a custom 'coat' aesthetic with an identity scale, and doubles
+    as a worked example of extending 'ggplot2' with a new 'Geom',
+    'draw_key' method and scale.
+License: MIT + file LICENSE
+URL: https://github.com/dar4datascience/geom_feliscatus,
+    https://dar4datascience.github.io/geom_feliscatus/
+BugReports: https://github.com/dar4datascience/geom_feliscatus/issues
+Depends:
+    R (>= 4.1)
+Imports:
+    cli,
+    ggplot2 (>= 3.5.0),
+    grid,
+    rlang
+Suggests:
+    knitr,
+    pkgdown,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/Needs/website: pkgdown
+Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.1

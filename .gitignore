@@ -48,3 +48,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# R graphics output
+Rplots.pdf
+
+# Local preview output
+dev/output/
