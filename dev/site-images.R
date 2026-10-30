@@ -60,7 +60,7 @@ for (coat in cat_coats()) {
 # Expression and rotation --------------------------------------------------
 
 variants <- pad_scales(
-  ggplot(coats, aes(x, y, coat = coat)) +
+  ggplot(coats[1:5, ], aes(x, y, coat = coat)) +
     geom_cat(
       size = c(26, 30, 26, 30, 26),
       angle = c(0, 15, -20, 30, 0),
@@ -160,6 +160,137 @@ scatter <- ggplot(cars, aes(wt, mpg, coat = coat, size = hp)) +
   theme_minimal()
 
 save_plot(scatter, "scatter.png", 8, 5)
+
+# Poses --------------------------------------------------------------------
+
+for (pose in cat_poses()) {
+  one <- ggplot(
+    data.frame(x = 1, y = 1, pose = pose),
+    aes(x, y, pose = pose)
+  ) +
+    geom_cat(size = 58, tail = "curl") +
+    coord_cartesian(clip = "off") +
+    blank()
+  save_plot(one, paste0("pose-", pose, ".png"), 3, 3)
+}
+
+poses <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+
+poses_plot <- pad_scales(
+  ggplot(poses, aes(x, y, pose = pose)) +
+    geom_cat(size = 34, tail = "curl") +
+    coord_cartesian(clip = "off") +
+    blank()
+)
+
+save_plot(poses_plot, "poses.png", 10, 3)
+
+# Tails --------------------------------------------------------------------
+
+for (tail in cat_tails()) {
+  one <- ggplot(
+    data.frame(x = 1, y = 1, tail = tail),
+    aes(x, y, tail = tail)
+  ) +
+    geom_cat(size = 58, coat = "tabby") +
+    coord_cartesian(clip = "off") +
+    blank()
+  save_plot(one, paste0("tail-", tail, ".png"), 3, 3)
+}
+
+tails <- data.frame(x = seq_along(cat_tails()), y = 1, tail = cat_tails())
+
+tails_plot <- pad_scales(
+  ggplot(tails, aes(x, y, tail = tail)) +
+    geom_cat(size = 34, coat = "tabby") +
+    coord_cartesian(clip = "off") +
+    blank()
+)
+
+save_plot(tails_plot, "tails.png", 12, 3)
+
+# Accessories --------------------------------------------------------------
+
+accessories <- setdiff(cat_accessories(), "none")
+
+for (accessory in accessories) {
+  one <- ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+    geom_cat(size = 58, coat = "tabby", accessory = accessory) +
+    coord_cartesian(clip = "off") +
+    blank()
+  save_plot(one, paste0("accessory-", accessory, ".png"), 3, 3)
+}
+
+accessory_data <- data.frame(x = seq_along(accessories), y = 1)
+
+accessory_plot <- pad_scales(
+  ggplot(accessory_data, aes(x, y)) +
+    coord_cartesian(clip = "off") +
+    blank()
+)
+
+for (i in seq_along(accessories)) {
+  accessory_plot <- accessory_plot +
+    geom_cat(
+      data = accessory_data[i, , drop = FALSE],
+      size = 24,
+      coat = "tabby",
+      accessory = accessories[i]
+    )
+}
+
+save_plot(accessory_plot, "accessories.png", 14, 3)
+
+# Moods --------------------------------------------------------------------
+
+moods <- setdiff(cat_moods(), "none")
+
+for (mood in moods) {
+  one <- ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+    geom_cat(size = 58, coat = "tuxedo", mood = mood) +
+    coord_cartesian(clip = "off") +
+    blank()
+  save_plot(one, paste0("mood-", mood, ".png"), 3, 3)
+}
+
+mood_data <- data.frame(x = seq_along(moods), y = 1)
+
+mood_plot <- pad_scales(
+  ggplot(mood_data, aes(x, y)) +
+    coord_cartesian(clip = "off") +
+    blank()
+)
+
+for (i in seq_along(moods)) {
+  mood_plot <- mood_plot +
+    geom_cat(
+      data = mood_data[i, , drop = FALSE],
+      size = 22,
+      coat = "tuxedo",
+      mood = moods[i]
+    )
+}
+
+save_plot(mood_plot, "moods.png", 14, 4)
+
+# Silhouette ---------------------------------------------------------------
+
+silhouette <- data.frame(x = 1:2, y = 1)
+
+silhouette_plot <- pad_scales(
+  ggplot(silhouette, aes(x, y)) +
+    geom_cat(data = silhouette[1, , drop = FALSE], coat = "calico", size = 40) +
+    geom_cat(
+      data = silhouette[2, , drop = FALSE],
+      coat = "calico",
+      size = 40,
+      silhouette = TRUE
+    ) +
+    coord_cartesian(clip = "off") +
+    blank()
+)
+
+save_plot(silhouette_plot, "silhouette.png", 6, 3)
 
 # Favicon ------------------------------------------------------------------
 

@@ -34,9 +34,17 @@ default scale.
 | Path | What it is |
 |:--|:--|
 | `R/geom-cat.R` | `GeomCat`, `geom_cat()` |
-| `R/draw-cat.R` | `cat_grob()`, `draw_key_cat()`, grid helpers |
+| `R/draw-cat.R` | `cat_grob()` composition and `draw_key_cat()` |
+| `R/cat-parts.R` | colour and geometry helpers, drawing context, sticker halo |
+| `R/cat-poses.R` | pose specs, anchors, body and ear drawing, coat patches |
+| `R/cat-tails.R` | tail specs, paths, tail rings |
+| `R/cat-face.R` | eyes, muzzle, mouth and whiskers |
+| `R/cat-accessories.R` | accessory specs and drawing |
+| `R/cat-moods.R` | mood extras |
 | `R/cat-coats.R` | coat palettes, markings, deterministic variation |
 | `R/scale-coat.R` | `scale_coat_discrete()` |
+| `R/scale-pose.R` | `scale_pose_discrete()` |
+| `R/scale-tail.R` | `scale_tail_discrete()` |
 | `tests/testthat/` | unit tests for the data, the layer and the scale |
 | `vignettes/` | the user guide and the extension guide |
 | `inst/templates/geom-template.R` | scaffold for a new geom |
@@ -67,10 +75,16 @@ Then follow the checklist at the bottom of the template. The short version:
 
 `dev/preview.R` writes four images:
 
-- `coats.png` - all five coats at a readable size
+- `coats.png` - all seven coats at a readable size
 - `big.png` - the same, large, for detail
 - `legend.png` - the legend keys
 - `variants.png` - rotation and closed eyes
+
+`dev/feature-preview.R` writes the pose, tail, coat, accessory, mood and
+silhouette sheets to `dev/references/features/`.
+
+`dev/abstraction-refs.R` writes the six abstraction references to
+`dev/references/`.
 
 Open them with any image viewer; the script prints the directory when it
 finishes.
