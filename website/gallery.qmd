@@ -7,9 +7,9 @@ toc: true
 Every image on this page was rendered with `geom_cat()`. The code under
 each figure is the code that made it.
 
-## The five coats {#coats}
+## The seven coats {#coats}
 
-::: {layout-ncol=3}
+::: {layout-ncol=4}
 [![Black](images/coat-black.png){fig-alt="A black cat with amber eyes."}](#black)
 
 [![White](images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}](#white)
@@ -19,6 +19,10 @@ each figure is the code that made it.
 [![Calico](images/coat-calico.png){fig-alt="A white cat with orange and black patches."}](#calico)
 
 [![Tortoise](images/coat-tortoise.png){fig-alt="A brown cat with dark and ginger mottling."}](#tortoise)
+
+[![Tabby](images/coat-tabby.png){fig-alt="A brown tabby cat with dark stripes."}](#tabby)
+
+[![Siamese](images/coat-siamese.png){fig-alt="A cream cat with a dark face mask, ears, paws and tail."}](#siamese)
 :::
 
 ### Black {#black}
@@ -68,9 +72,130 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
   geom_cat(coat = "tortoise", size = 40)
 ```
 
+### Tabby {#tabby}
+
+Brown with dark stripes on the body and forehead, and rings on the tail.
+`"mackerel"` is accepted as an alias.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "tabby", size = 40)
+```
+
+### Siamese {#siamese}
+
+Cream with dark points on the face, ears, paws and tail. `"point"` and
+`"colourpoint"` are accepted as aliases.
+
+```r
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "siamese", size = 40)
+```
+
+## Poses
+
+`pose` is an aesthetic. The four bodies are `sitting`, `loaf`, `curled` and
+`standing`.
+
+```r
+poses <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 34, tail = "curl") +
+  scale_pose_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+![](images/poses.png){fig-alt="Four cats: sitting, in a loaf, curled up and standing."}
+
+## Tails
+
+`tail` is an aesthetic too. The six shapes are `up`, `curl`, `plume`,
+`kink`, `bob` and `none`.
+
+```r
+tails <- data.frame(x = seq_along(cat_tails()), y = 1, tail = cat_tails())
+
+ggplot(tails, aes(x, y, tail = tail)) +
+  geom_cat(size = 34, coat = "tabby") +
+  scale_tail_discrete(labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+![](images/tails.png){fig-alt="Six tabby cats with an upright tail, a curled tail, a plume, a kink, a bobtail and no tail."}
+
+## Accessories
+
+`accessory` is a layer parameter, so each accessory is its own layer.
+
+```r
+accessories <- setdiff(cat_accessories(), "none")
+acc <- data.frame(x = seq_along(accessories), y = 1)
+
+p <- ggplot(acc, aes(x, y)) + coord_equal() + theme_void()
+for (i in seq_along(accessories)) {
+  p <- p + geom_cat(
+    data = acc[i, , drop = FALSE],
+    size = 24,
+    coat = "tabby",
+    accessory = accessories[i]
+  )
+}
+p
+```
+
+![](images/accessories.png){fig-alt="Nine tabby cats wearing a collar, bow tie, party hat, wizard hat, scarf, glasses, headphones, crown and Santa hat."}
+
+## Moods
+
+`mood` is a layer parameter as well.
+
+```r
+moods <- setdiff(cat_moods(), "none")
+mood_data <- data.frame(x = seq_along(moods), y = 1)
+
+p <- ggplot(mood_data, aes(x, y)) + coord_equal() + theme_void()
+for (i in seq_along(moods)) {
+  p <- p + geom_cat(
+    data = mood_data[i, , drop = FALSE],
+    size = 22,
+    coat = "tuxedo",
+    mood = moods[i]
+  )
+}
+p
+```
+
+![](images/moods.png){fig-alt="Cats with z's, a heart, sparkles, an anger mark, a sweat drop, music notes, a fish, yarn, paw prints, a shadow and a box."}
+
+## Silhouettes
+
+`silhouette = TRUE` drops the face, markings, whiskers and accessory and
+draws the cat as one solid shape. Pale coats fall back to ink so they stay
+visible.
+
+```r
+silhouettes <- data.frame(x = 1:2, y = 1)
+
+ggplot(silhouettes, aes(x, y)) +
+  geom_cat(data = silhouettes[1, , drop = FALSE], coat = "calico", size = 40) +
+  geom_cat(
+    data = silhouettes[2, , drop = FALSE],
+    coat = "calico",
+    size = 40,
+    silhouette = TRUE
+  ) +
+  coord_equal() +
+  theme_void()
+```
+
+![](images/silhouette.png){fig-alt="A calico cat beside the same cat drawn as a solid black silhouette."}
+
 ## Markings vary with the seed
 
-Calico and tortoise markings are generated from a small deterministic
+Calico, tortoise and tabby markings are generated from a small deterministic
 generator, so the same `seed` always gives the same cat and a different
 `seed` gives a different pattern.
 
@@ -92,7 +217,7 @@ ggplot(seeds, aes(seed, 1, coat = coat)) +
 `eyes` and `whiskers` are layer parameters; `angle` is an aesthetic.
 
 ```r
-cats <- data.frame(x = 1:5, y = 1, coat = cat_coats())
+cats <- data.frame(x = 1:5, y = 1, coat = cat_coats()[1:5])
 
 ggplot(cats, aes(x, y, coat = coat)) +
   geom_cat(
@@ -153,7 +278,7 @@ ggplot(cats, aes(x, y, coat = coat)) +
   scale_coat_discrete(name = "Coat", labels = toupper)
 ```
 
-![](images/legend-labels.png){fig-alt="The same five cats with a legend titled Coat and uppercase labels."}
+![](images/legend-labels.png){fig-alt="The same seven cats with a legend titled Coat and uppercase labels."}
 
 ## Cats in a plot
 

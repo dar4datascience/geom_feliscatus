@@ -25,8 +25,20 @@ website:
             href: reference/geom-cat.qmd
           - text: "cat_coats()"
             href: reference/cat-coats.qmd
+          - text: "cat_poses()"
+            href: reference/cat-poses.qmd
+          - text: "cat_tails()"
+            href: reference/cat-tails.qmd
+          - text: "cat_accessories()"
+            href: reference/cat-accessories.qmd
+          - text: "cat_moods()"
+            href: reference/cat-moods.qmd
           - text: "scale_coat_discrete()"
             href: reference/scale-coat.qmd
+          - text: "scale_pose_discrete()"
+            href: reference/scale-pose.qmd
+          - text: "scale_tail_discrete()"
+            href: reference/scale-tail.qmd
           - text: "GeomCat"
             href: reference/geom-cat.qmd#the-ggproto-object
           - text: "All objects"

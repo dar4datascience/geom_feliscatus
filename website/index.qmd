@@ -5,16 +5,17 @@ toc: false
 ---
 
 ::: {.hero}
-![](images/hero.png){fig-alt="Five cats in a row: black, white, tuxedo, calico and tortoise."}
+![](images/hero.png){fig-alt="Seven cats in a row: black, white, tuxedo, calico, tortoise, tabby and siamese."}
 :::
 
 `geomfeliscatus` is a small, complete example of extending ggplot2 with a
 new geom. It draws cats.
 
-Cats come in five coats: **black**, **white**, **tuxedo**, **calico** and
-**tortoise**. The `coat` aesthetic is an identity scale, so the value you
-supply is the cat you get, whether you fix it in the layer or map it from
-your data.
+Cats come in seven coats: **black**, **white**, **tuxedo**, **calico**,
+**tortoise**, **tabby** and **siamese**. They can sit, loaf, curl up or
+stand; have six tail shapes; wear nine accessories; and come with mood
+extras. The `coat`, `pose` and `tail` aesthetics are identity scales, so the
+value you supply is the cat you get.
 
 ## Install
 
@@ -37,9 +38,9 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 
 ![](images/coat-tuxedo.png){width=220px fig-alt="A single tuxedo cat: black fur with a white bib, chin and paws."}
 
-## The five coats
+## The seven coats
 
-::: {layout-ncol=5}
+::: {layout-ncol=7}
 [![Black](images/coat-black.png){fig-alt="A black cat with amber eyes."}](gallery.qmd#black)
 
 [![White](images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}](gallery.qmd#white)
@@ -49,6 +50,10 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 [![Calico](images/coat-calico.png){fig-alt="A white cat with orange and black patches."}](gallery.qmd#calico)
 
 [![Tortoise](images/coat-tortoise.png){fig-alt="A brown cat with dark and ginger mottling."}](gallery.qmd#tortoise)
+
+[![Tabby](images/coat-tabby.png){fig-alt="A brown tabby cat with dark stripes."}](gallery.qmd#tabby)
+
+[![Siamese](images/coat-siamese.png){fig-alt="A cream cat with a dark face mask, ears, paws and tail."}](gallery.qmd#siamese)
 :::
 
 ## What's inside
@@ -56,8 +61,14 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 | Object | What it does |
 |:--|:--|
 | [`geom_cat()`](reference/geom-cat.qmd) | Draws a cat at each observation. |
-| [`cat_coats()`](reference/cat-coats.qmd) | Lists the five coats. |
+| [`cat_coats()`](reference/cat-coats.qmd) | Lists the seven coats. |
+| [`cat_poses()`](reference/cat-poses.qmd) | Lists the four poses. |
+| [`cat_tails()`](reference/cat-tails.qmd) | Lists the six tails. |
+| [`cat_accessories()`](reference/cat-accessories.qmd) | Lists the accessories. |
+| [`cat_moods()`](reference/cat-moods.qmd) | Lists the mood extras. |
 | [`scale_coat_discrete()`](reference/scale-coat.qmd) | Identity scale for the `coat` aesthetic. |
+| [`scale_pose_discrete()`](reference/scale-pose.qmd) | Identity scale for the `pose` aesthetic. |
+| [`scale_tail_discrete()`](reference/scale-tail.qmd) | Identity scale for the `tail` aesthetic. |
 | [`GeomCat`](reference/geom-cat.qmd#the-ggproto-object) | The ggproto object behind the geom, exported for reuse. |
 
 ## Aesthetics at a glance
@@ -65,7 +76,9 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 | Aesthetic | Default | Meaning |
 |:--|:--|:--|
 | `x`, `y` | required | Position of the cat. |
-| `coat` | `"black"` | One of the five coats. |
+| `coat` | `"black"` | One of the seven coats. |
+| `pose` | `"sitting"` | One of `sitting`, `loaf`, `curled`, `standing`. |
+| `tail` | `"up"` | One of `up`, `curl`, `plume`, `kink`, `bob`, `none`. |
 | `size` | `8` | Height of the cat in mm. |
 | `colour` | `NA` | Outline colour; `NA` picks a contrasting rim. |
 | `fill` | `NA` | Overrides the base fur colour. |
@@ -73,8 +86,9 @@ ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
 | `linewidth` | `1` | Outline width multiplier. |
 | `angle` | `0` | Rotation in degrees. |
 
-Layer parameters `eyes` (`"open"` or `"closed"`), `whiskers` and `seed`
-control expression and the markings of calico and tortoise cats.
+Layer parameters `eyes` (`"open"` or `"closed"`), `whiskers`, `seed`,
+`accessory`, `mood` and `silhouette` control expression, markings and
+decoration.
 
 ## Learn how it works
 

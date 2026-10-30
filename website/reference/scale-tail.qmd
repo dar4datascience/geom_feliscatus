@@ -1,0 +1,52 @@
+---
+title: "scale_tail_discrete()"
+subtitle: "Identity scale for the tail aesthetic"
+toc: false
+---
+
+## Description
+
+Tail names are also the values the aesthetic takes, so the default scale
+passes them through unchanged. `scale_tail_discrete()` is that identity
+scale. Use it to set a title, labels or limits for a mapped `tail`.
+
+## Usage
+
+```r
+scale_tail_discrete(..., guide = "legend")
+```
+
+## Arguments
+
+| Argument | Description |
+|:--|:--|
+| `...` | Arguments passed on to `scale_discrete_identity()`, such as `name`, `labels` or `limits`. |
+| `guide` | A guide specification. Defaults to `"legend"`. |
+
+## Value
+
+A ggplot2 scale.
+
+## Details
+
+ggplot2 looks for a default scale named `scale_<aesthetic>_<type>` in the
+environment of the `ggplot()` call. For a discrete aesthetic called
+`tail`, that is `scale_tail_discrete()`. The package defines it, so mapping
+`tail` works as soon as `library(geomfeliscatus)` is attached.
+
+## Examples
+
+```r
+tails <- data.frame(x = seq_along(cat_tails()), y = 1, tail = cat_tails())
+
+ggplot(tails, aes(x, y, tail = tail)) +
+  geom_cat(size = 20, coat = "tabby") +
+  scale_tail_discrete(name = "Tail", labels = toupper)
+```
+
+```r
+# Restrict which tails appear
+ggplot(tails, aes(x, y, tail = tail)) +
+  geom_cat(size = 20) +
+  scale_tail_discrete(limits = c("up", "curl"))
+```

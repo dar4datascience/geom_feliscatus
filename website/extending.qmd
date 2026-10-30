@@ -118,8 +118,9 @@ Three grid details are worth remembering:
   named every layer's gTree `"geom_cat"`, which silently collapsed two
   `geom_cat()` layers into one. Leaving the gTree unnamed lets grid
   generate unique names.
-- `gTree()` regenerates the names of its children, so naming children for
-  debugging needs care.
+- Inside one cat the parts are named (`"cat_body"`, `"cat_head"`, ...) so
+  tests can find them. The sticker border copies get a `.halo` suffix so
+  they do not collide with the coloured part.
 
 ## Step 3: draw the legend key
 

@@ -1,0 +1,52 @@
+---
+title: "scale_pose_discrete()"
+subtitle: "Identity scale for the pose aesthetic"
+toc: false
+---
+
+## Description
+
+Pose names are also the values the aesthetic takes, so the default scale
+passes them through unchanged. `scale_pose_discrete()` is that identity
+scale. Use it to set a title, labels or limits for a mapped `pose`.
+
+## Usage
+
+```r
+scale_pose_discrete(..., guide = "legend")
+```
+
+## Arguments
+
+| Argument | Description |
+|:--|:--|
+| `...` | Arguments passed on to `scale_discrete_identity()`, such as `name`, `labels` or `limits`. |
+| `guide` | A guide specification. Defaults to `"legend"`. |
+
+## Value
+
+A ggplot2 scale.
+
+## Details
+
+ggplot2 looks for a default scale named `scale_<aesthetic>_<type>` in the
+environment of the `ggplot()` call. For a discrete aesthetic called
+`pose`, that is `scale_pose_discrete()`. The package defines it, so mapping
+`pose` works as soon as `library(geomfeliscatus)` is attached.
+
+## Examples
+
+```r
+poses <- data.frame(x = seq_along(cat_poses()), y = 1, pose = cat_poses())
+
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 20) +
+  scale_pose_discrete(name = "Pose", labels = toupper)
+```
+
+```r
+# Restrict which poses appear
+ggplot(poses, aes(x, y, pose = pose)) +
+  geom_cat(size = 20) +
+  scale_pose_discrete(limits = c("sitting", "curled"))
+```

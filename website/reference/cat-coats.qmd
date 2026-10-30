@@ -23,7 +23,8 @@ A character vector of coat names:
 
 ```r
 cat_coats()
-#> [1] "black"     "white"     "tuxedo"    "calico"    "tortoise"
+#> [1] "black"    "white"    "tuxedo"   "calico"   "tortoise" "tabby"
+#> [7] "siamese"
 ```
 
 ## The coats
@@ -35,8 +36,10 @@ cat_coats()
 | `"tuxedo"` | Black with a white bib, chin and paws. |
 | `"calico"` | White with orange and black patches on the head, body and tail. |
 | `"tortoise"` | Brown with dark and ginger mottling. |
+| `"tabby"` | Brown with dark stripes on the body, forehead and tail. |
+| `"siamese"` | Cream with a dark mask, ears, paws and tail. |
 
-::: {layout-ncol=5}
+::: {layout-ncol=7}
 ![Black](../images/coat-black.png){fig-alt="A black cat with amber eyes."}
 
 ![White](../images/coat-white.png){fig-alt="A cream-white cat with blue eyes."}
@@ -46,24 +49,30 @@ cat_coats()
 ![Calico](../images/coat-calico.png){fig-alt="A white cat with orange and black patches."}
 
 ![Tortoise](../images/coat-tortoise.png){fig-alt="A brown cat with dark and ginger mottling."}
+
+![Tabby](../images/coat-tabby.png){fig-alt="A brown tabby cat with dark stripes."}
+
+![Siamese](../images/coat-siamese.png){fig-alt="A cream cat with a dark face mask, ears, paws and tail."}
 :::
 
 ## Aliases
 
 Coat names are matched case-insensitively and with surrounding whitespace
-removed. Two aliases are accepted:
+removed. These aliases are accepted:
 
 | Alias | Coat |
 |:--|:--|
 | `"tortoiseshell"` | `"tortoise"` |
 | `"tortie"` | `"tortoise"` |
+| `"mackerel"` | `"tabby"` |
+| `"point"`, `"colourpoint"` | `"siamese"` |
 
 Unknown coats raise an error that lists the supported values.
 
 ## Examples
 
 ```r
-# All five coats in one plot
+# All seven coats in one plot
 cats <- data.frame(
   x = seq_along(cat_coats()),
   y = 1,

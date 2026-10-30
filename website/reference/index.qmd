@@ -6,9 +6,15 @@ toc: false
 
 | Object | Description |
 |:--|:--|
-| [`geom_cat()`](geom-cat.qmd) | Draws a cat at each observation, with five coats. |
+| [`geom_cat()`](geom-cat.qmd) | Draws a cat at each observation, with seven coats, four poses and six tails. |
 | [`cat_coats()`](cat-coats.qmd) | Returns the names of the supported coats. |
+| [`cat_poses()`](cat-poses.qmd) | Returns the names of the supported poses. |
+| [`cat_tails()`](cat-tails.qmd) | Returns the names of the supported tails. |
+| [`cat_accessories()`](cat-accessories.qmd) | Returns the names of the supported accessories. |
+| [`cat_moods()`](cat-moods.qmd) | Returns the names of the supported mood extras. |
 | [`scale_coat_discrete()`](scale-coat.qmd) | Identity scale for the `coat` aesthetic, with a legend. |
+| [`scale_pose_discrete()`](scale-pose.qmd) | Identity scale for the `pose` aesthetic, with a legend. |
+| [`scale_tail_discrete()`](scale-tail.qmd) | Identity scale for the `tail` aesthetic, with a legend. |
 | [`GeomCat`](geom-cat.qmd#the-ggproto-object) | The ggproto object behind the geom. |
 
 The package also has two vignettes:
