@@ -1,0 +1,127 @@
+---
+title: "Drawing cats with geom_cat()"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Drawing cats with geom_cat()}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 3
+)
+```
+
+```{r}
+library(ggplot2)
+library(geomfeliscatus)
+```
+
+`geom_cat()` is a pictogram geom: it draws one cat at each `x`/`y`
+position. Cats are drawn in a square viewport whose size is controlled by
+the `size` aesthetic, measured in millimetres, so they keep their
+proportions whatever the shape of the panel.
+
+## A first cat
+
+```{r first-cat, fig.alt = "A single tuxedo cat drawn at the centre of an empty panel."}
+ggplot(data.frame(x = 1, y = 1), aes(x, y)) +
+  geom_cat(coat = "tuxedo", size = 30) +
+  coord_equal() +
+  theme_void()
+```
+
+## The five coats
+
+`cat_coats()` lists the coats the geom knows how to draw.
+
+```{r coats, fig.alt = "Five cats in a row, one in each coat: black, white, tuxedo, calico and tortoise."}
+cats <- data.frame(
+  x = seq_along(cat_coats()),
+  y = 1,
+  coat = cat_coats()
+)
+
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(size = 22) +
+  coord_equal() +
+  theme_void()
+```
+
+`coat` is an aesthetic, so it can be mapped from a column in your data.
+The values are used as-is: `"calico"` means a calico cat, not a colour
+from a palette. `scale_coat_discrete()` is the identity scale behind that
+behaviour, and it is also where you set a title or prettier labels.
+
+```{r coat-scale, fig.alt = "The same five cats with uppercase coat labels in the legend, titled 'Coat'."}
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(size = 22) +
+  scale_coat_discrete(name = "Coat", labels = toupper) +
+  coord_equal() +
+  theme_void()
+```
+
+## Size, angle and expression
+
+`size` is the height of the cat in mm. `angle` rotates the cat
+counter-clockwise, and `eyes` and `whiskers` are layer parameters rather
+than aesthetics.
+
+```{r variants, fig.alt = "Five cats at different sizes and angles, all with closed eyes and no whiskers."}
+ggplot(cats, aes(x, y, coat = coat)) +
+  geom_cat(
+    size = c(14, 18, 22, 26, 30),
+    angle = c(0, 15, -20, 30, 0),
+    eyes = "closed",
+    whiskers = FALSE
+  ) +
+  coord_equal() +
+  theme_void()
+```
+
+## Colours
+
+`fill` replaces the base fur colour while keeping the coat's markings, and
+`colour` sets the outline. `alpha` fades the whole cat.
+
+```{r colours, fig.alt = "Three white cats with pink, blue and green fur."}
+pastels <- data.frame(
+  x = 1:3,
+  y = 1,
+  fur = c("#f6d5e0", "#d5e8f6", "#e6f6d5")
+)
+
+ggplot(pastels, aes(x, y)) +
+  geom_cat(coat = "white", fill = pastels$fur, size = 26) +
+  coord_equal() +
+  theme_void()
+```
+
+## Cats in a plot
+
+Because a cat is just a mark, it composes with the rest of the grammar:
+scales, facets, positions and themes all work as usual. Map `size` when
+you want the cats themselves to carry a variable.
+
+```{r scatter, fig.alt = "A scatterplot of ten cars where each point is a cat whose size grows with horsepower."}
+cars <- transform(
+  mtcars[1:10, ],
+  coat = rep(cat_coats(), length.out = 10)
+)
+
+ggplot(cars, aes(wt, mpg, coat = coat, size = hp)) +
+  geom_cat() +
+  scale_size_area(max_size = 16) +
+  theme_minimal()
+```
+
+## Where to next
+
+- Read `vignette("extending-ggplot2", package = "geomfeliscatus")` for a
+  guided tour of the code behind the geom.
+- `?geom_cat` documents every aesthetic and parameter.
+- `?cat_coats` lists the coats.

@@ -1,0 +1,284 @@
+---
+title: "How geom_cat() works: a guide to extending ggplot2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How geom_cat() works: a guide to extending ggplot2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 3
+)
+```
+
+```{r}
+library(ggplot2)
+library(geomfeliscatus)
+```
+
+This vignette walks through the pieces that make `geom_cat()` work.  It is
+a map of the extension points, in the order you need them when you write
+your own geom.
+
+## A layer is a Geom, a Stat and a position
+
+Every `geom_*()` and `stat_*()` function builds a layer.  A layer needs
+three collaborators:
+
+- a **Geom**, which turns data into graphical objects (grobs),
+- a **Stat**, which computes on the data before it is drawn, and
+- a **position**, which adjusts the data after the stat.
+
+`geom_cat()` uses the identity stat and the identity position: the data
+goes in unchanged and each row becomes one cat.
+
+```{r}
+GeomCat
+```
+
+The class name is CamelCase and the `geom_*()` function is snake_case, so
+`GeomCat` pairs with `geom_cat()`.
+
+## Step 1: declare what the geom needs
+
+A `ggproto()` object inherits from `Geom` and declares a handful of
+fields:
+
+```{r eval = FALSE}
+GeomCat <- ggproto(
+  "GeomCat",
+  Geom,
+  required_aes = c("x", "y"),
+  non_missing_aes = c("size", "coat"),
+  default_aes = aes(
+    coat = "black",
+    size = 8,
+    colour = NA,
+    fill = NA,
+    alpha = NA,
+    linewidth = 1,
+    angle = 0
+  ),
+  extra_params = "na.rm",
+  draw_key = draw_key_cat,
+  draw_panel = function(self, data, panel_params, coord,
+                        eyes = "open", whiskers = TRUE, seed = 1) {
+    # ...
+  }
+)
+```
+
+- `required_aes` are checked before drawing and produce the familiar
+  "requires the following missing aesthetics" error.
+- `default_aes` are filled in for aesthetics the user did not supply.
+  Anything listed here is also an aesthetic, so `coat`, `size` and
+  `angle` can be mapped in `aes()` or fixed in the `geom_cat()` call.
+- `non_missing_aes` are removed when missing, like `size` here.
+- `extra_params` lists parameters that are not aesthetics but are accepted
+  by the layer, such as `na.rm`.
+- `draw_key` draws the legend key.
+
+Notice that `eyes`, `whiskers` and `seed` are formal arguments of
+`draw_panel()`.  That is what makes them valid layer parameters: ggplot2
+collects a geom's parameters from the arguments of `draw_panel()`.
+
+## Step 2: turn data into grobs
+
+`draw_panel()` receives the layer data, the panel's scales and the
+coordinate system.  The first job is to transform the data to npc
+coordinates (0 to 1 within the panel):
+
+```{r eval = FALSE}
+coords <- coord$transform(data, panel_params)
+```
+
+The result has one row per cat and columns for every aesthetic, after
+scaling.  A pictogram geom then draws one grob per row.  `geom_cat()`
+gives each cat its own viewport, sized in millimetres:
+
+```{r eval = FALSE}
+grid::gTree(
+  children = do.call(grid::gList, grobs),
+  name = "geom_cat"
+)
+```
+
+Inside `cat_grob()` the cat is drawn in a square coordinate system from 0
+to 1, so the drawing code never has to think about the panel's shape.  The
+viewport does that work:
+
+```{r eval = FALSE}
+grid::viewport(
+  x = x, y = y,
+  width = width, height = height,
+  angle = angle,
+  clip = "off"
+)
+```
+
+Two grid details are worth remembering:
+
+- `gpar(lwd = )` is measured in 1/96 inch, not millimetres.  `geom_cat()`
+  converts the `size` aesthetic to a line width so that outlines scale with
+  the cat.
+- `gTree()` regenerates the names of its children, so `cat_grob()` restores
+  the names afterwards.  Named children make the grob easier to inspect and
+  to test.
+
+## Step 3: draw the legend key
+
+A legend key is just a small grob.  `draw_key` receives the key's data, the
+layer parameters and the key size, and draws in a 0 to 1 viewport:
+
+```{r eval = FALSE}
+draw_key_cat <- function(data, params, size) {
+  cat_grob(
+    x = grid::unit(0.5, "npc"),
+    y = grid::unit(0.5, "npc"),
+    width = grid::unit(0.9, "snpc"),
+    height = grid::unit(0.9, "snpc"),
+    coat = data$coat %||% "black",
+    # ...
+    stroke = 0.9 * (data$linewidth %||% 1)
+  )
+}
+```
+
+`"snpc"` units are square npc units: the cat stays square even when the
+legend key is not.  Without a `draw_key`, the legend would use the default
+`Geom` key, which draws nothing useful for a cat.
+
+## Step 4: write the user-facing function
+
+The `geom_*()` function is boilerplate.  Copy the shape of
+`ggplot2::geom_point()`: the geom is fixed, the stat is flexible, and
+everything else goes into `params`.
+
+```{r eval = FALSE}
+geom_cat <- function(mapping = NULL,
+                     data = NULL,
+                     stat = "identity",
+                     position = "identity",
+                     ...,
+                     eyes = c("open", "closed"),
+                     whiskers = TRUE,
+                     seed = 1,
+                     na.rm = FALSE,
+                     show.legend = NA,
+                     inherit.aes = TRUE) {
+  eyes <- match.arg(eyes)
+  layer(
+    geom = GeomCat,
+    stat = stat,
+    data = data,
+    mapping = mapping,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list2(
+      na.rm = na.rm,
+      eyes = eyes,
+      whiskers = whiskers,
+      seed = seed,
+      ...
+    )
+  )
+}
+```
+
+The `...` is what makes `geom_cat(coat = "calico", size = 12)` work:
+`coat` and `size` are aesthetics, so ggplot2 moves them from `params` into
+the layer data and recycles them to the number of rows.
+
+## Step 5: custom aesthetics and their default scale
+
+`coat` is not an aesthetic ggplot2 knows about.  That is fine: any name in
+`default_aes` becomes an aesthetic.  When the user maps it, ggplot2 looks
+for a default scale by name.  For a discrete aesthetic called `coat`, it
+looks for `scale_coat_discrete()` in the environment of the `ggplot()`
+call.  That is why the package provides one:
+
+```{r eval = FALSE}
+scale_coat_discrete <- function(..., guide = "legend") {
+  scale_discrete_identity(aesthetics = "coat", ..., guide = guide)
+}
+```
+
+An identity scale is the right choice here because the values *are* the
+coats: `"tuxedo"` is a recipe for drawing a tuxedo cat, not a colour.
+If you invent an aesthetic whose values need translating, return a palette
+from a `discrete_scale()` instead.
+
+## Step 6: test the pieces
+
+Testing an extension has three layers of its own:
+
+1. Test the data preparation and the drawing helpers directly.
+   `coat_spec()` is a pure function, so its output is easy to assert.
+2. Test the layer through ggplot2.  `ggplot_build()` gives you the
+   render-ready data, and `layer_grob()` gives you the grob:
+
+   ```{r}
+   plot <- ggplot(data.frame(x = 1:3, y = 1:3), aes(x, y)) + geom_cat()
+   grob <- layer_grob(plot)[[1]]
+   length(grob$children)
+   ```
+
+3. Test the errors with snapshots, so the whole message is reviewed:
+
+   ```{r eval = FALSE}
+   expect_snapshot(error = TRUE, match_coat("dalmatian"))
+   ```
+
+Visual regression tests (for example with `vdiffr`) are a good addition
+for a geom whose whole job is appearance.
+
+## Step 7: package plumbing
+
+An extension package needs very little beyond a normal package:
+
+- `DESCRIPTION` lists `ggplot2` in `Imports`.
+- The package-level doc block imports ggplot2 and the grid functions you
+  use, and roxygen writes `NAMESPACE`.
+- Every exported function and ggproto object has documentation.
+- `devtools::document()`, `devtools::test()` and `devtools::check()` are
+  the loop.
+
+`GeomCat` is exported so that other packages can build layers with it, and
+so that `layer(geom = GeomCat, ...)` works in examples and tests.
+
+## The local scaffold
+
+This repository ships the scaffolding used to develop the geom:
+
+- `dev/preview.R` renders every coat to `dev/output/` for a quick visual
+  check.
+- `inst/templates/geom-template.R` is a commented template with a Geom, a
+  Stat, a scale and a `draw_key`.
+- `dev/README.md` describes the edit, preview, test, document loop.
+
+Copy the template into a new file with:
+
+```{r eval = FALSE}
+usethis::use_template(
+  "geom-template.R",
+  save_as = "R/geom-mything.R",
+  package = "geomfeliscatus"
+)
+```
+
+## Further reading
+
+- `vignette("extending-ggplot2", package = "ggplot2")` is the official
+  reference for the Geom and Stat APIs.
+- The [ggplot2 book](https://ggplot2-book.org/ext-ggplot2.html) chapter on
+  extending ggplot2.
+- [Easy geom recipes](https://evamaerey.github.io/easy-geom-recipes/), a
+  gentle, example-first route through Stats and geoms.
+- The [ggplot2 extenders club](https://ggplot2-extenders.github.io/ggplot-extension-club/),
+  a community of people building extensions.

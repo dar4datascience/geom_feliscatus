@@ -1,0 +1,22 @@
+url: https://dar4datascience.github.io/geom_feliscatus/
+template:
+  bootstrap: 5
+
+reference:
+- title: Cats
+  desc: Draw cats and control their coats.
+  contents:
+  - geom_cat
+  - cat_coats
+  - scale_coat_discrete
+- title: Extend
+  desc: The ggproto object behind the geom.
+  contents:
+  - GeomCat
+
+articles:
+- title: Guides
+  navbar: ~
+  contents:
+  - geom-feliscatus
+  - extending-ggplot2
